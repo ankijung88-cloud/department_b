@@ -157,9 +157,9 @@ export const Header: React.FC = () => {
                             </AnimatePresence>
                         </div>
 
-                        <button className="hover:text-dancheong-red transition-colors">
+                        <Link to="/cart" className="hover:text-dancheong-red transition-colors">
                             <ShoppingBag size={20} />
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -230,7 +230,9 @@ export const Header: React.FC = () => {
                                         <User size={20} />
                                         {isAuthenticated && <span className="text-xs ml-1">{profile?.full_name || user?.email?.split('@')[0]}</span>}
                                     </button>
-                                    <button className="text-white hover:text-dancheong-red"><ShoppingBag size={20} /></button>
+                                    <Link to="/cart" className="text-white hover:text-dancheong-red" onClick={() => setIsMobileMenuOpen(false)}>
+                                        <ShoppingBag size={20} />
+                                    </Link>
                                 </div>
                             </nav>
                         </motion.div>

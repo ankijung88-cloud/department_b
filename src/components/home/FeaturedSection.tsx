@@ -14,21 +14,32 @@ export const FeaturedSection: React.FC = () => {
 
     useEffect(() => {
         let mounted = true;
+
         const fetchProducts = async () => {
             console.log('Fetching products started...');
+
+            // DIAGNOSTIC LOGS REMOVED: Production ready
+
             try {
-                const data = await getFeaturedProducts();
-                console.log('Fetching products succeeded:', data);
+                // Timeout promise
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timed out (5000ms)')), 5000)
+                );
+
+                // Race between fetch and timeout
+                const data = await Promise.race([
+                    getFeaturedProducts(),
+                    timeoutPromise
+                ]) as FeaturedItem[];
+
                 if (mounted) {
                     setProducts(data);
                 }
             } catch (err: any) {
-                console.error('Failed to fetch products caught in component:', err.message || err);
                 if (mounted) {
                     setError(t('common.error'));
                 }
             } finally {
-                console.log('Fetching products finished (finally)');
                 if (mounted) {
                     setLoading(false);
                 }
@@ -37,7 +48,7 @@ export const FeaturedSection: React.FC = () => {
 
         fetchProducts();
         return () => { mounted = false; };
-    }, [t]);
+    }, []); // Removed [t] dependency to prevent re-fetching on language change (handled by re-render)
 
     if (loading) {
         return (

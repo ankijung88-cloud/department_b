@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export const AboutSection: React.FC = () => {
+    const navigate = useNavigate();
+
     return (
         <section className="py-32 bg-charcoal overflow-hidden">
             <div className="container mx-auto px-6">
@@ -14,11 +17,17 @@ export const AboutSection: React.FC = () => {
                         className="lg:w-1/2"
                     >
                         <div className="relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1533552865985-703cb2c3dfb6?q=80&w=1287&auto=format&fit=crop"
-                                alt="Traditional Korean Aesthetic"
-                                className="w-full rounded-lg shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
-                            />
+                            <div className="relative aspect-video w-full rounded-lg shadow-2xl overflow-hidden group">
+                                <iframe
+                                    className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
+                                    src="https://www.youtube.com/embed/7Wt6XlT5Z5w?autoplay=1&mute=1&loop=1&playlist=7Wt6XlT5Z5w&controls=0&showinfo=0&rel=0"
+                                    title="Traditional Korean Aesthetic Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                                {/* Overlay to prevent interaction if desired, or allow it. Currently allowing interaction but adding a subtle overlay for consistent look until hovered? No, let's keep it clean. */}
+                                <div className="absolute inset-0 bg-black/20 pointer-events-none group-hover:bg-transparent transition-colors duration-500" />
+                            </div>
                             <div className="absolute -bottom-10 -right-10 w-2/3 h-2/3 bg-dancheong-green/10 -z-10 rounded-lg"></div>
                         </div>
                     </motion.div>
@@ -47,7 +56,10 @@ export const AboutSection: React.FC = () => {
                         </div>
 
                         <div className="mt-12">
-                            <button className="text-dancheong-green hover:text-white border border-dancheong-green hover:bg-dancheong-green px-8 py-3 rounded-none transition-all duration-300">
+                            <button
+                                onClick={() => navigate('/about')}
+                                className="text-dancheong-green hover:text-white border border-dancheong-green hover:bg-dancheong-green px-8 py-3 rounded-none transition-all duration-300"
+                            >
                                 브랜드 스토리 보기
                             </button>
                         </div>

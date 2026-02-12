@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FeaturedItem, LocalizedString } from '../../types';
+import { FeaturedItem } from '../../types';
 import { getLocalizedText } from '../../utils/i18nUtils';
 import { useTranslation } from 'react-i18next';
 import { Edit, Trash2, Plus } from 'lucide-react';
-import { transformProduct } from '../../api/products'; // Need to export this or recreate it
+
 
 // Re-defining for now as it wasn't exported from api/products.ts
 // Best practice: Export it from api/products.ts

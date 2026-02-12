@@ -20,6 +20,8 @@ export interface FeaturedItem {
     date: LocalizedString;
     location: LocalizedString;
     price: LocalizedString;
+    closedDays?: string[];
+    videoUrl?: string;
 }
 
 export interface FloorContent {

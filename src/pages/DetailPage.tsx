@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Share2, X, CheckCircle2, CreditCard, Wallet, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, MapPin, Share2, X, CheckCircle2, CreditCard, Wallet, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../utils/i18nUtils';
@@ -8,6 +8,15 @@ import { getProductById } from '../api/products';
 import { createBooking } from '../api/bookings';
 import { FeaturedItem } from '../types';
 import { useAuth } from '../context/AuthContext';
+import LoginModal from '../components/auth/LoginModal';
+
+// Helper for date formatting
+const formatDate = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};
 
 export const DetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -18,9 +27,14 @@ export const DetailPage: React.FC = () => {
     const [isBooking, setIsBooking] = useState(false);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'bank_transfer' | 'on_site' | null>(null);
     const [bookingStep, setBookingStep] = useState<'select' | 'confirm'>('select');
+
+    // Calendar State
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -41,6 +55,10 @@ export const DetailPage: React.FC = () => {
     }, [id]);
 
     const handleShare = () => {
+        if (!user) {
+            setShowLoginModal(true);
+            return;
+        }
         setShowShareModal(true);
     };
 
@@ -77,13 +95,21 @@ export const DetailPage: React.FC = () => {
     };
 
     const handleBooking = () => {
+        if (!user) {
+            setShowLoginModal(true);
+            return;
+        }
+        if (!selectedDate) {
+            alert(t('common.select_date', 'Please select a date first.'));
+            return;
+        }
         setBookingStep('select');
         setPaymentMethod(null);
         setShowBookingModal(true);
     };
 
     const confirmBooking = async () => {
-        if (!paymentMethod || !item || !id) return;
+        if (!paymentMethod || !item || !id || !selectedDate) return;
 
         setIsBooking(true);
         try {
@@ -92,7 +118,8 @@ export const DetailPage: React.FC = () => {
                 product_name: getLocalizedText(item.title, i18n.language),
                 user_email: user?.email,
                 payment_method: paymentMethod,
-                total_price: item.price as any
+                total_price: item.price as any, // In a real app, parse this
+                // booking_date: selectedDate // If backend supports it
             });
             setBookingStep('confirm');
         } catch (error) {
@@ -101,6 +128,53 @@ export const DetailPage: React.FC = () => {
             setIsBooking(false);
         }
     };
+
+    // Calendar Helper Functions
+    const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+    const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
+
+    const renderCalendar = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const daysInMonth = getDaysInMonth(year, month);
+        const firstDay = getFirstDayOfMonth(year, month);
+
+        const days = [];
+        // Empty slots for previous month
+        for (let i = 0; i < firstDay; i++) {
+            days.push(<div key={`empty-${i}`} className="h-8 md:h-10 w-8 md:w-10" />);
+        }
+
+        const todayStr = formatDate(new Date());
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateObj = new Date(year, month, day);
+            const dateStr = formatDate(dateObj);
+            const isSelected = selectedDate === dateStr;
+            const isClosed = item?.closedDays?.includes(dateStr);
+            const isPast = dateStr < todayStr;
+            const isDisabled = isClosed || isPast;
+
+            let bgClass = "bg-white/5 hover:bg-white/10 text-white";
+            if (isSelected) bgClass = "bg-dancheong-red text-white font-bold shadow-lg scale-105";
+            else if (isDisabled) bgClass = "bg-white/5 text-white/20 cursor-not-allowed";
+
+            days.push(
+                <button
+                    key={day}
+                    onClick={() => !isDisabled && setSelectedDate(dateStr)}
+                    disabled={isDisabled}
+                    className={`h-8 md:h-10 w-8 md:w-10 rounded-full flex items-center justify-center text-sm transition-all ${bgClass}`}
+                >
+                    {day}
+                </button>
+            );
+        }
+        return days;
+    };
+
+    const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
 
     if (loading) {
         return (
@@ -125,14 +199,29 @@ export const DetailPage: React.FC = () => {
 
     return (
         <article className="pt-20 min-h-screen bg-charcoal text-white">
+            <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+
             {/* Header / Hero */}
             <div className="relative h-[60vh] w-full">
-                <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${item.imageUrl})` }}
-                >
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-                </div>
+                {item.videoUrl ? (
+                    <div className="absolute inset-0 bg-black">
+                        <iframe
+                            className="w-full h-full object-cover opacity-60"
+                            src={`https://www.youtube.com/embed/${item.videoUrl.split('v=')[1]?.split('&')[0]}?autoplay=1&mute=1&loop=1&playlist=${item.videoUrl.split('v=')[1]?.split('&')[0]}&controls=0&showinfo=0&rel=0`}
+                            title="YouTube video player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                        <div className="absolute inset-0 bg-black/40" />
+                    </div>
+                ) : (
+                    <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${item.imageUrl})` }}
+                    >
+                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+                    </div>
+                )}
 
                 <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-12">
                     <Link to="/" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors">
@@ -144,13 +233,15 @@ export const DetailPage: React.FC = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <span className="bg-dancheong-red px-3 py-1 text-xs font-bold rounded-full mb-4 inline-block">
-                            {item.category}
-                        </span>
+                        <div className="inline-block border-b-2 border-dancheong-red mb-4 pb-1">
+                            <span className="text-xl font-serif font-bold tracking-wider">
+                                {item.category}
+                            </span>
+                        </div>
                         <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">{getLocalizedText(item.title, i18n.language)}</h1>
                         <div className="flex flex-wrap gap-6 text-white/80 text-sm">
                             <div className="flex items-center">
-                                <Calendar size={16} className="mr-2 text-dancheong-green" />
+                                <CalendarIcon size={16} className="mr-2 text-dancheong-green" />
                                 {getLocalizedText(item.date, i18n.language)}
                             </div>
                             <div className="flex items-center">
@@ -163,40 +254,77 @@ export const DetailPage: React.FC = () => {
             </div>
 
             {/* Content Body */}
-            <div className="container mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="container mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
                 <div className="lg:col-span-2 space-y-8">
                     <section>
                         <h3 className="text-2xl font-bold font-serif mb-6 border-l-4 border-dancheong-green pl-4">{t('common.detail_intro')}</h3>
-                        <p className="text-lg leading-relaxed text-white/80 whitespace-pre-line">
+                        <p className="text-lg leading-relaxed text-white/80 whitespace-pre-line min-h-[500px]">
                             {getLocalizedText(item.description, i18n.language)}
                         </p>
                     </section>
                 </div>
 
-                {/* Sidebar / CTA */}
+                {/* Sidebar / CTA - Sticky */}
                 <div className="lg:col-span-1">
-                    <div className="sticky top-24 bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
-                        <div className="space-y-4 mb-8">
-                            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                    <div className="sticky top-24 space-y-6">
+                        {/* Price Card */}
+                        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
+                            <div className="flex justify-between items-center mb-4">
                                 <span className="text-white/60">{t('common.price')}</span>
                                 <span className="text-xl font-bold text-dancheong-red">{getLocalizedText(item.price, i18n.language)}</span>
                             </div>
                         </div>
 
-                        <button
-                            onClick={handleBooking}
-                            className="w-full bg-dancheong-red hover:bg-red-700 text-white py-4 rounded-lg font-bold text-lg mb-4 transition-colors shadow-lg"
-                        >
-                            {t('common.booking')}
-                        </button>
+                        {/* Calendar */}
+                        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
+                            <h4 className="text-lg font-bold mb-4 flex items-center">
+                                <CalendarIcon size={18} className="mr-2 text-dancheong-green" />
+                                {t('common.select_date', 'Select Date')}
+                            </h4>
 
-                        <button
-                            onClick={handleShare}
-                            className="w-full bg-transparent border border-white/20 hover:bg-white/5 text-white py-3 rounded-lg font-medium transition-colors flex justify-center items-center"
-                        >
-                            <Share2 size={18} className="mr-2" />
-                            {t('common.share')}
-                        </button>
+                            <div className="flex justify-between items-center mb-4">
+                                <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronLeft size={20} /></button>
+                                <span className="font-bold">{currentDate.getFullYear()}. {currentDate.getMonth() + 1}</span>
+                                <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronRight size={20} /></button>
+                            </div>
+
+                            <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-white/40 font-bold uppercase">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div className="grid grid-cols-7 gap-2 place-items-center">
+                                {renderCalendar()}
+                            </div>
+
+                            {selectedDate && (
+                                <div className="mt-4 p-3 bg-dancheong-red/10 border border-dancheong-red/20 rounded-lg text-center">
+                                    <span className="text-sm text-dancheong-red font-bold">
+                                        Selected: {selectedDate}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
+                            <button
+                                onClick={handleBooking}
+                                disabled={!selectedDate}
+                                className={`w-full py-4 rounded-lg font-bold text-lg mb-4 transition-all shadow-lg flex items-center justify-center ${selectedDate
+                                    ? 'bg-dancheong-red hover:bg-red-700 text-white'
+                                    : 'bg-white/10 text-white/40 cursor-not-allowed'
+                                    }`}
+                            >
+                                {t('common.booking')}
+                            </button>
+
+                            <button
+                                onClick={handleShare}
+                                className="w-full bg-transparent border border-white/20 hover:bg-white/5 text-white py-3 rounded-lg font-medium transition-colors flex justify-center items-center"
+                            >
+                                <Share2 size={18} className="mr-2" />
+                                {t('common.share')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -337,6 +465,19 @@ export const DetailPage: React.FC = () => {
                             {bookingStep === 'select' ? (
                                 <>
                                     <h2 className="text-2xl font-bold mb-8 text-center">{t('common.payment.method')}</h2>
+
+                                    {/* Order Summary in Modal */}
+                                    <div className="bg-white/5 rounded-xl p-4 mb-6 text-sm">
+                                        <div className="flex justify-between mb-2">
+                                            <span className="text-white/60">{t('common.product')}</span>
+                                            <span className="font-bold">{getLocalizedText(item.title, i18n.language)}</span>
+                                        </div>
+                                        <div className="flex justify-between text-dancheong-red font-bold">
+                                            <span>{t('common.date')}</span>
+                                            <span>{selectedDate}</span>
+                                        </div>
+                                    </div>
+
                                     <div className="space-y-4 mb-8">
                                         <button
                                             onClick={() => setPaymentMethod('bank_transfer')}
@@ -382,6 +523,10 @@ export const DetailPage: React.FC = () => {
                                         <div>
                                             <p className="text-xs text-white/40 mb-1">{t('common.view_details')}</p>
                                             <p className="font-bold">{getLocalizedText(item.title, i18n.language)}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-white/40 mb-1">{t('common.date')}</p>
+                                            <p className="font-bold text-dancheong-red">{selectedDate}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs text-white/40 mb-1">{t('common.payment.method')}</p>

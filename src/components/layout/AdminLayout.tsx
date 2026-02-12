@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { LogOut, Package, Plus, LayoutDashboard } from 'lucide-react';
+import { LogOut, Package, Plus } from 'lucide-react';
 
 const AdminLayout: React.FC = () => {
     const navigate = useNavigate();

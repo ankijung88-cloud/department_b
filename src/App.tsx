@@ -10,6 +10,8 @@ import DetailPage from './pages/DetailPage';
 import CategoryPage from './pages/CategoryPage';
 import FloorIntroPage from './pages/FloorIntroPage';
 import FloorGuidePage from './pages/FloorGuidePage';
+import AboutPage from './pages/AboutPage';
+import CartPage from './pages/CartPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminLayout from './components/layout/AdminLayout';
@@ -27,7 +29,9 @@ function App() {
                     <Route path="/detail/:id" element={<DetailPage />} />
                     <Route path="/floor/:id" element={<FloorIntroPage />} />
                     <Route path="/floor-guide" element={<FloorGuidePage />} />
+                    <Route path="/about" element={<AboutPage />} />
                     <Route path="/:category" element={<CategoryPage />} />
+                    <Route path="/cart" element={<CartPage />} />
                 </Route>
 
                 {/* Admin Routes */}

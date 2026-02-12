@@ -18,11 +18,17 @@ export const transformProduct = (row: ProductRow): FeaturedItem => {
         date: row.date as unknown as LocalizedString,
         location: row.location as unknown as LocalizedString,
         price: row.price as unknown as LocalizedString,
+        closedDays: (row.closed_days as string[]) || [],
+        videoUrl: row.video_url || undefined,
     };
 };
 
+// import { FEATURED_ITEMS } from '../data/mockData'; // Not used anymore for fallback
+
 export const getFeaturedProducts = async (): Promise<FeaturedItem[]> => {
     console.log('API: getFeaturedProducts called');
+
+    // Direct Supabase call without fallback
     const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -31,8 +37,8 @@ export const getFeaturedProducts = async (): Promise<FeaturedItem[]> => {
     console.log('API: getFeaturedProducts response received', { hasData: !!data, hasError: !!error });
 
     if (error) {
-        console.error('Error fetching products:', error.message || error);
-        throw error;
+        console.error('Error fetching products (Supabase):', error.message || error);
+        throw error; // Throw error to be caught by the component
     }
 
     return (data || []).map(transformProduct);

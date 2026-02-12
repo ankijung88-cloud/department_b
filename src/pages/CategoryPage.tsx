@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../utils/i18nUtils';
 import { getProductsByCategory } from '../api/products';
-import { FeaturedItem } from '../types';
+import { FeaturedItem, FloorCategory } from '../types';
+import { FLOOR_CATEGORIES } from '../data/mockData';
 
 // Mapping URL paths to Internal Categories (for filtering)
 const CATEGORY_FILTERS: Record<string, string[]> = {
@@ -27,6 +28,9 @@ const CategoryPage: React.FC = () => {
     // Handle case where category might be undefined or not in map
     const categoryId = category || 'tickets';
     const targetCategories = CATEGORY_FILTERS[categoryId] || [];
+
+    // Find current floor metadata
+    const floorData = FLOOR_CATEGORIES.find(f => f.id === categoryId);
 
     useEffect(() => {
         let mounted = true;
@@ -56,17 +60,46 @@ const CategoryPage: React.FC = () => {
     }, [categoryId]);
 
     return (
-        <div className="pt-24 pb-12 min-h-screen bg-[#1a1a1a]">
-            {/* Header */}
-            <header className="container mx-auto px-6 mb-12">
-                <motion.h1
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 capitalize"
+        <div className="pt-20 pb-12 min-h-screen bg-[#1a1a1a]">
+            {/* Stylized Header */}
+            <header className="relative h-[40vh] min-h-[300px] flex items-center justify-center overflow-hidden mb-12">
+                {/* Background Image with Parallax-like effect */}
+                <motion.div
+                    initial={{ scale: 1.1 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 1.5 }}
+                    className="absolute inset-0 z-0"
                 >
-                    {categoryId}
-                </motion.h1>
-                <div className="w-20 h-1 bg-dancheong-red" />
+                    <img
+                        src={floorData?.bgImage || 'https://images.unsplash.com/photo-1590635327202-b53050a49826?q=80&w=2560&auto=format&fit=crop'}
+                        alt=""
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+                </motion.div>
+
+                <div className="container mx-auto px-6 relative z-10 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 tracking-tight">
+                            {floorData ? getLocalizedText(floorData.title, i18n.language) : categoryId}
+                        </h1>
+                        {floorData && (
+                            <p className="text-xl md:text-2xl text-white/80 font-light max-w-2xl mx-auto">
+                                {getLocalizedText(floorData.description, i18n.language)}
+                            </p>
+                        )}
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: 80 }}
+                            transition={{ delay: 0.5, duration: 0.8 }}
+                            className="h-1 bg-dancheong-red mx-auto mt-8"
+                        />
+                    </motion.div>
+                </div>
             </header>
 
             <div className="container mx-auto px-6">

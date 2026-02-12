@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { getProductById } from '../../api/products';
-import { FeaturedItem, LocalizedString } from '../../types';
-import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { LocalizedString } from '../../types';
+import { ArrowLeft, Save, Upload, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const LANGUAGES = ['ko', 'en', 'ja', 'zh'];
@@ -16,11 +15,19 @@ const initialLocalized: LocalizedString = {
     zh: ''
 };
 
+// Helper for date formatting
+const formatDate = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+};
+
 const ProductFormPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const isEditMode = !!id;
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(isEditMode);
@@ -30,9 +37,14 @@ const ProductFormPage: React.FC = () => {
     const [description, setDescription] = useState<LocalizedString>({ ...initialLocalized });
     const [category, setCategory] = useState('Trend');
     const [imageUrl, setImageUrl] = useState('');
+    const [videoUrl, setVideoUrl] = useState('');
     const [date, setDate] = useState<LocalizedString>({ ...initialLocalized });
     const [location, setLocation] = useState<LocalizedString>({ ...initialLocalized });
     const [price, setPrice] = useState<LocalizedString>({ ...initialLocalized });
+    const [closedDays, setClosedDays] = useState<string[]>([]);
+
+    // Calendar State
+    const [currentCalDate, setCurrentCalDate] = useState(new Date());
 
     useEffect(() => {
         if (isEditMode && id) {
@@ -43,9 +55,11 @@ const ProductFormPage: React.FC = () => {
                     setDescription(product.description);
                     setCategory(product.category);
                     setImageUrl(product.imageUrl);
+                    setVideoUrl(product.videoUrl || '');
                     setDate(product.date);
                     setLocation(product.location);
                     setPrice(product.price);
+                    setClosedDays(product.closedDays || []);
                 }
                 setFetching(false);
             };
@@ -79,6 +93,62 @@ const ProductFormPage: React.FC = () => {
         }
     };
 
+    const toggleClosedDay = (dateStr: string) => {
+        setClosedDays(prev => {
+            if (prev.includes(dateStr)) {
+                return prev.filter(d => d !== dateStr);
+            } else {
+                return [...prev, dateStr].sort();
+            }
+        });
+    };
+
+    // Calendar Helper Functions
+    const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+    const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
+
+    const renderCalendar = () => {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        const daysInMonth = getDaysInMonth(year, month);
+        const firstDay = getFirstDayOfMonth(year, month);
+
+        const days = [];
+        // Empty slots
+        for (let i = 0; i < firstDay; i++) {
+            days.push(<div key={`empty-${i}`} className="h-10 w-10" />);
+        }
+
+        const todayStr = formatDate(new Date());
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateObj = new Date(year, month, day);
+            const dateStr = formatDate(dateObj);
+            const isClosed = closedDays.includes(dateStr);
+            const isPast = dateStr < todayStr;
+
+            let bgClass = "bg-white/5 hover:bg-white/10 text-white";
+            if (isClosed) bgClass = "bg-red-500 text-white font-bold shadow-lg";
+            else if (isPast) bgClass = "bg-white/5 text-white/20"; // Just visual dimming, admins can still close past days if they want? Or maybe strictly future? Let's allow all for flexibility.
+
+            days.push(
+                <button
+                    key={day}
+                    type="button"
+                    onClick={() => toggleClosedDay(dateStr)}
+                    className={`h-10 w-10 rounded-full flex items-center justify-center text-sm transition-all ${bgClass}`}
+                    title={isClosed ? "Closed Day" : "Open Day"}
+                >
+                    {day}
+                </button>
+            );
+        }
+        return days;
+    };
+
+    const nextMonth = () => setCurrentCalDate(new Date(currentCalDate.getFullYear(), currentCalDate.getMonth() + 1, 1));
+    const prevMonth = () => setCurrentCalDate(new Date(currentCalDate.getFullYear(), currentCalDate.getMonth() - 1, 1));
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -88,9 +158,11 @@ const ProductFormPage: React.FC = () => {
             description,
             category,
             image_url: imageUrl,
+            video_url: videoUrl,
             date,
             location,
-            price
+            price,
+            closed_days: closedDays
         };
 
         try {
@@ -126,7 +198,7 @@ const ProductFormPage: React.FC = () => {
     if (fetching) return <div className="text-white p-8">Loading product...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto pb-20">
             <div className="flex items-center mb-8">
                 <Link to="/admin/products" className="text-white/60 hover:text-white mr-4 transition-colors">
                     <ArrowLeft size={24} />
@@ -152,6 +224,21 @@ const ProductFormPage: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Video URL */}
+                <div>
+                    <label className="block text-white/80 text-sm font-bold mb-2">YouTube Video URL (Optional)</label>
+                    <input
+                        type="text"
+                        value={videoUrl}
+                        onChange={(e) => setVideoUrl(e.target.value)}
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
+                    />
+                    <p className="text-white/40 text-xs mt-1">
+                        YouTube video link for the product detail page. If provided, it will be displayed instead of the image.
+                    </p>
+                </div>
+
                 {/* Category */}
                 <div>
                     <label className="block text-white/80 text-sm font-bold mb-2">Category</label>
@@ -169,6 +256,60 @@ const ProductFormPage: React.FC = () => {
                         <option value="Food">Food</option>
                         <option value="Travel">Travel</option>
                     </select>
+                </div>
+
+                {/* Closed Days Management */}
+                <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                        <CalendarIcon size={20} className="mr-2 text-dancheong-red" />
+                        Manage Closed Days (休務日)
+                    </h3>
+                    <p className="text-sm text-white/60 mb-6">
+                        Click on dates to toggle them as closed days. Red indicates closed.
+                    </p>
+
+                    <div className="flex flex-col md:flex-row gap-8">
+                        {/* Calendar UI */}
+                        <div className="w-full max-w-sm">
+                            <div className="flex justify-between items-center mb-4 bg-white/5 p-2 rounded-lg">
+                                <button type="button" onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronLeft size={20} /></button>
+                                <span className="font-bold flex-1 text-center">{currentCalDate.getFullYear()}. {String(currentCalDate.getMonth() + 1).padStart(2, '0')}</span>
+                                <button type="button" onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronRight size={20} /></button>
+                            </div>
+
+                            <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-white/40 font-bold uppercase">
+                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            </div>
+                            <div className="grid grid-cols-7 gap-2 place-items-center">
+                                {renderCalendar()}
+                            </div>
+                        </div>
+
+                        {/* Selected Days List */}
+                        <div className="flex-1">
+                            <h4 className="font-bold text-sm mb-2 text-white/80">Selected Closed Days ({closedDays.length})</h4>
+                            <div className="bg-black/20 rounded-lg p-4 h-64 overflow-y-auto border border-white/5">
+                                {closedDays.length === 0 ? (
+                                    <p className="text-white/40 text-sm">No closed days selected.</p>
+                                ) : (
+                                    <div className="flex flex-wrap gap-2">
+                                        {closedDays.sort().map(day => (
+                                            <span key={day} className="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-full text-xs flex items-center">
+                                                {day}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleClosedDay(day)}
+                                                    className="ml-2 hover:text-white"
+                                                >
+                                                    &times;
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Localized Fields */}
