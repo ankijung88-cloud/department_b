@@ -13,19 +13,30 @@ export const FeaturedSection: React.FC = () => {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        let mounted = true;
         const fetchProducts = async () => {
+            console.log('Fetching products started...');
             try {
                 const data = await getFeaturedProducts();
-                setProducts(data);
-            } catch (err) {
-                console.error('Failed to fetch products:', err);
-                setError(t('common.error'));
+                console.log('Fetching products succeeded:', data);
+                if (mounted) {
+                    setProducts(data);
+                }
+            } catch (err: any) {
+                console.error('Failed to fetch products caught in component:', err.message || err);
+                if (mounted) {
+                    setError(t('common.error'));
+                }
             } finally {
-                setLoading(false);
+                console.log('Fetching products finished (finally)');
+                if (mounted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchProducts();
+        return () => { mounted = false; };
     }, [t]);
 
     if (loading) {

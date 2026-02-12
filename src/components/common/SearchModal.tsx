@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FEATURED_ITEMS } from '../../data/mockData';
+import { searchProducts } from '../../api/products';
 import { getLocalizedText } from '../../utils/i18nUtils';
+import { FeaturedItem } from '../../types';
 
 interface SearchModalProps {
     isOpen: boolean;
@@ -14,12 +15,14 @@ interface SearchModalProps {
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
     const { t, i18n } = useTranslation();
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState(FEATURED_ITEMS);
+    const [results, setResults] = useState<FeaturedItem[]>([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
             setQuery(''); // Reset query on open
+            setResults([]);
         } else {
             document.body.style.overflow = 'unset';
         }
@@ -29,19 +32,30 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
     }, [isOpen]);
 
     useEffect(() => {
-        if (!query.trim()) {
-            setResults([]);
-            return;
-        }
+        const fetchResults = async () => {
+            if (!query.trim()) {
+                setResults([]);
+                return;
+            }
 
-        const lowerQuery = query.toLowerCase();
-        const filtered = FEATURED_ITEMS.filter(item => {
-            const title = getLocalizedText(item.title, i18n.language).toLowerCase();
-            const desc = getLocalizedText(item.description, i18n.language).toLowerCase();
-            return title.includes(lowerQuery) || desc.includes(lowerQuery);
-        });
-        setResults(filtered);
-    }, [query, i18n.language]);
+            setLoading(true);
+            try {
+                const data = await searchProducts(query);
+                setResults(data);
+            } catch (error) {
+                console.error('Search failed:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Debounce search
+        const timeoutId = setTimeout(() => {
+            fetchResults();
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [query]);
 
     return (
         <AnimatePresence>
@@ -84,51 +98,57 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
                             {/* Results */}
                             <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                                {query && (
-                                    <p className="text-white/40 mb-6 text-sm">
-                                        {t('search.results_for', { query })} ({results.length})
-                                    </p>
-                                )}
-
-                                {results.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
-                                        {results.map((item) => (
-                                            <Link
-                                                key={item.id}
-                                                to={`/detail/${item.id}`}
-                                                onClick={onClose}
-                                                className="group flex gap-4 bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors border border-white/5 hover:border-white/20"
-                                            >
-                                                <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                                                    <img
-                                                        src={item.imageUrl}
-                                                        alt={getLocalizedText(item.title, i18n.language)}
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                    />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <span className="text-xs font-bold text-dancheong-red mb-1 block">
-                                                        {item.category}
-                                                    </span>
-                                                    <h3 className="text-white font-serif text-lg leading-tight mb-2 truncate group-hover:text-dancheong-red transition-colors">
-                                                        {getLocalizedText(item.title, i18n.language)}
-                                                    </h3>
-                                                    <p className="text-white/60 text-sm line-clamp-2">
-                                                        {getLocalizedText(item.description, i18n.language)}
-                                                    </p>
-                                                </div>
-                                                <div className="flex items-center justify-center text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all">
-                                                    <ArrowRight size={20} />
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
+                                {loading ? (
+                                    <div className="text-center py-10 text-white/50">{t('common.loading')}</div>
                                 ) : (
-                                    query && (
-                                        <div className="text-center py-20">
-                                            <p className="text-white/40 text-lg">{t('search.no_results')}</p>
-                                        </div>
-                                    )
+                                    <>
+                                        {query && results.length > 0 && (
+                                            <p className="text-white/40 mb-6 text-sm">
+                                                {t('search.results_for', { query })} ({results.length})
+                                            </p>
+                                        )}
+
+                                        {results.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+                                                {results.map((item) => (
+                                                    <Link
+                                                        key={item.id}
+                                                        to={`/detail/${item.id}`}
+                                                        onClick={onClose}
+                                                        className="group flex gap-4 bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors border border-white/5 hover:border-white/20"
+                                                    >
+                                                        <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                                                            <img
+                                                                src={item.imageUrl}
+                                                                alt={getLocalizedText(item.title, i18n.language)}
+                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <span className="text-xs font-bold text-dancheong-red mb-1 block">
+                                                                {item.category}
+                                                            </span>
+                                                            <h3 className="text-white font-serif text-lg leading-tight mb-2 truncate group-hover:text-dancheong-red transition-colors">
+                                                                {getLocalizedText(item.title, i18n.language)}
+                                                            </h3>
+                                                            <p className="text-white/60 text-sm line-clamp-2">
+                                                                {getLocalizedText(item.description, i18n.language)}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex items-center justify-center text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all">
+                                                            <ArrowRight size={20} />
+                                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            query && (
+                                                <div className="text-center py-20">
+                                                    <p className="text-white/40 text-lg">{t('search.no_results')}</p>
+                                                </div>
+                                            )
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </motion.div>

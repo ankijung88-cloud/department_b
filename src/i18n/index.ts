@@ -76,7 +76,14 @@ const resources = {
                 "signup": "가입하기",
                 "submit": "확인",
                 "loading": "처리 중...",
-                "error_generic": "오류가 발생했습니다."
+                "error_generic": "오류가 발생했습니다.",
+                "forgot_password": "비밀번호 찾기",
+                "find_id": "이메일 찾기",
+                "reset_password_sent": "비밀번호 재설정 이메일이 발송되었습니다.",
+                "find_email_success": "사용자님의 이메일은 {{email}} 입니다.",
+                "find_email_not_found": "해당 정보로 등록된 계정을 찾을 수 없습니다.",
+                "social_login": "간편 로그인",
+                "google_login": "Google로 계속하기"
             },
             "footer": {
                 "address": "서울특별시 중구 소공로 123",
@@ -107,7 +114,28 @@ const resources = {
                 "share": "공유하기",
                 "duration": "소요 시간",
                 "duration_value": "약 90분",
-                "detail_intro": "상세 소개"
+                "detail_intro": "상세 소개",
+                "share_modal": {
+                    "title": "공유하기",
+                    "copy_link": "링크 복사",
+                    "copied": "링크가 복사되었습니다.",
+                    "sns": {
+                        "kakao": "카카오톡",
+                        "facebook": "페이스북",
+                        "twitter": "트위터",
+                        "more": "더보기"
+                    }
+                },
+                "payment": {
+                    "method": "결제 방식 선택",
+                    "bank_transfer": "계좌이체",
+                    "on_site": "현장결제",
+                    "confirm": "결제하기",
+                    "success": "예매가 완료되었습니다.",
+                    "info": "예매 정보",
+                    "bank_info": "입금 계좌: 신한은행 123-456-789012 (예금주: Culture Dept)",
+                    "close": "닫기"
+                }
             },
             "search": {
                 "placeholder": "검색어를 입력하세요...",
@@ -189,7 +217,14 @@ const resources = {
                 "signup": "Sign Up",
                 "submit": "Submit",
                 "loading": "Processing...",
-                "error_generic": "An error occurred."
+                "error_generic": "An error occurred.",
+                "forgot_password": "Forgot Password",
+                "find_id": "Find ID",
+                "reset_password_sent": "Password reset email has been sent.",
+                "find_email_success": "Your email is {{email}}.",
+                "find_email_not_found": "No account found with this information.",
+                "social_login": "Social Login",
+                "google_login": "Continue with Google"
             },
             "footer": {
                 "address": "123 Sogong-ro, Jung-gu, Seoul",
@@ -220,7 +255,28 @@ const resources = {
                 "share": "Share",
                 "duration": "Duration",
                 "duration_value": "Approx. 90 mins",
-                "detail_intro": "Details"
+                "detail_intro": "Details",
+                "share_modal": {
+                    "title": "Share",
+                    "copy_link": "Copy Link",
+                    "copied": "Link Copied!",
+                    "sns": {
+                        "kakao": "KakaoTalk",
+                        "facebook": "Facebook",
+                        "twitter": "Twitter",
+                        "more": "More"
+                    }
+                },
+                "payment": {
+                    "method": "Select Payment Method",
+                    "bank_transfer": "Bank Transfer",
+                    "on_site": "On-site Payment",
+                    "confirm": "Confirm Payment",
+                    "success": "Booking Completed",
+                    "info": "Booking Info",
+                    "bank_info": "Account: Shinhan Bank 123-456-789012 (Holder: Culture Dept)",
+                    "close": "Close"
+                }
             },
             "search": {
                 "placeholder": "Enter search term...",
@@ -302,7 +358,9 @@ const resources = {
                 "signup": "登録する",
                 "submit": "確認",
                 "loading": "処理中...",
-                "error_generic": "エラーが発生しました。"
+                "error_generic": "エラーが発生しました。",
+                "social_login": "簡単ログイン",
+                "google_login": "Googleで続行"
             },
             "footer": {
                 "address": "ソウル特別市中区小公路123",
@@ -415,7 +473,9 @@ const resources = {
                 "signup": "注册",
                 "submit": "确认",
                 "loading": "处理中...",
-                "error_generic": "发生错误。"
+                "error_generic": "发生错误。",
+                "social_login": "快捷登录",
+                "google_login": "使用 Google 继续"
             },
             "footer": {
                 "address": "首尔特别市中区小公路123",

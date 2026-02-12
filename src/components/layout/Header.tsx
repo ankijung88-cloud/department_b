@@ -17,7 +17,8 @@ export const Header: React.FC = () => {
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, profile, isAdmin, signOut } = useAuth();
+    const isAuthenticated = !!user;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -32,8 +33,10 @@ export const Header: React.FC = () => {
         setIsLangMenuOpen(false);
     };
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        console.log('handleLogout triggered in Header');
+        await signOut();
+        console.log('signOut finished');
         setIsUserMenuOpen(false);
     };
 
@@ -130,7 +133,7 @@ export const Header: React.FC = () => {
                                     >
                                         <div className="px-4 py-3 border-b border-white/10">
                                             <p className="text-xs text-white/60">{t('auth.welcome')}</p>
-                                            <p className="text-sm font-bold text-white truncate">{user?.name}</p>
+                                            <p className="text-sm font-bold text-white truncate">{profile?.full_name || user?.email}</p>
                                         </div>
                                         <button
                                             onClick={handleLogout}
@@ -139,6 +142,16 @@ export const Header: React.FC = () => {
                                             <LogOut size={14} />
                                             {t('auth.logout')}
                                         </button>
+                                        {isAdmin && (
+                                            <Link
+                                                to="/admin/products"
+                                                className="w-full text-left px-4 py-2 text-sm text-dancheong-red hover:bg-white/10 transition-colors flex items-center gap-2 border-t border-white/5"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                            >
+                                                <User size={14} />
+                                                관리자 패널
+                                            </Link>
+                                        )}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -206,7 +219,7 @@ export const Header: React.FC = () => {
                                         className={`transition-colors ${isAuthenticated ? 'text-dancheong-red' : 'text-white hover:text-dancheong-red'}`}
                                         onClick={() => {
                                             if (isAuthenticated) {
-                                                logout();
+                                                signOut();
                                                 setIsMobileMenuOpen(false);
                                             } else {
                                                 setIsMobileMenuOpen(false);
@@ -215,7 +228,7 @@ export const Header: React.FC = () => {
                                         }}
                                     >
                                         <User size={20} />
-                                        {isAuthenticated && <span className="text-xs ml-1">{user?.name}</span>}
+                                        {isAuthenticated && <span className="text-xs ml-1">{profile?.full_name || user?.email?.split('@')[0]}</span>}
                                     </button>
                                     <button className="text-white hover:text-dancheong-red"><ShoppingBag size={20} /></button>
                                 </div>

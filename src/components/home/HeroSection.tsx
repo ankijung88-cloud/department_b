@@ -2,9 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { FloorGuideModal } from '../common/FloorGuideModal';
 
 export const HeroSection: React.FC = () => {
     const { t } = useTranslation();
+    const [isFloorGuideModalOpen, setIsFloorGuideModalOpen] = React.useState(false);
 
     return (
         <section className="relative h-screen w-full overflow-hidden">
@@ -44,6 +46,7 @@ export const HeroSection: React.FC = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
+                    onClick={() => setIsFloorGuideModalOpen(true)}
                     className="bg-dancheong-red hover:bg-red-700 text-white px-8 py-4 rounded-full text-lg font-medium flex items-center space-x-2 transition-colors shadow-lg"
                 >
                     <span>{t('hero.cta')}</span>
@@ -60,6 +63,9 @@ export const HeroSection: React.FC = () => {
             >
                 <span className="text-sm tracking-widest uppercase">Scroll Down</span>
             </motion.div>
+
+            {/* Floor Guide Modal */}
+            <FloorGuideModal isOpen={isFloorGuideModalOpen} onClose={() => setIsFloorGuideModalOpen(false)} />
         </section >
     );
 };

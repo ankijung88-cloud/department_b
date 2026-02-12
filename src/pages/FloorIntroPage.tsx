@@ -92,19 +92,19 @@ const FloorIntroPage: React.FC = () => {
                             >
                                 {block.type === 'text' && (
                                     <p className="text-lg leading-relaxed text-white/80 whitespace-pre-line">
-                                        {block.value}
+                                        {getLocalizedText(block.value, i18n.language)}
                                     </p>
                                 )}
                                 {block.type === 'image' && (
                                     <figure className="my-8">
                                         <img
-                                            src={block.value}
-                                            alt={block.caption || 'Floor intro image'}
+                                            src={getLocalizedText(block.value, i18n.language)}
+                                            alt={block.caption ? getLocalizedText(block.caption, i18n.language) : 'Floor intro image'}
                                             className="w-full rounded-xl shadow-2xl border border-white/10"
                                         />
                                         {block.caption && (
                                             <figcaption className="mt-3 text-center text-sm text-white/50 italic">
-                                                {block.caption}
+                                                {getLocalizedText(block.caption, i18n.language)}
                                             </figcaption>
                                         )}
                                     </figure>
@@ -112,7 +112,7 @@ const FloorIntroPage: React.FC = () => {
                                 {block.type === 'video' && (
                                     <div className="aspect-video w-full rounded-xl overflow-hidden shadow-2xl border border-white/10">
                                         <iframe
-                                            src={block.value}
+                                            src={getLocalizedText(block.value, i18n.language)}
                                             title="Floor Video"
                                             className="w-full h-full"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
