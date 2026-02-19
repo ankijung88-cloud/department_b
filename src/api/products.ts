@@ -1,114 +1,60 @@
-import { supabase } from '../lib/supabaseClient';
+import api from './client';
 import { FeaturedItem, LocalizedString } from '../types';
-import { Database } from '../types/database.types';
-
-type ProductRow = Database['public']['Tables']['products']['Row'];
 
 // Helper to transform DB row to Frontend Type
-// We need to cast the JSONB fields to LocalizedString because Supabase types them as Json
-// Helper to transform DB row to Frontend Type
-// We need to cast the JSONB fields to LocalizedString because Supabase types them as Json
-export const transformProduct = (row: ProductRow): FeaturedItem => {
+export const transformProduct = (row: any): FeaturedItem => {
+    // In MySQL backend, details field contains JSON string or object
+    const details = typeof row.details === 'string' ? JSON.parse(row.details) : row.details;
+
     return {
         id: row.id,
-        title: row.title as unknown as LocalizedString,
-        description: row.description as unknown as LocalizedString,
-        category: row.category,
+        title: (details?.original_title || { ko: row.name }) as LocalizedString,
+        description: (details?.original_description || { ko: row.description }) as LocalizedString,
+        category: row.category_name || row.category_id || 'Other',
         imageUrl: row.image_url,
-        date: row.date as unknown as LocalizedString,
-        location: row.location as unknown as LocalizedString,
-        price: row.price as unknown as LocalizedString,
-        closedDays: (row.closed_days as string[]) || [],
-        videoUrl: row.video_url || undefined,
+        date: (details?.date || { ko: '' }) as LocalizedString,
+        location: (details?.location || { ko: '' }) as LocalizedString,
+        price: (details?.price || { ko: row.price.toString() }) as LocalizedString,
+        closedDays: details?.closed_days || [],
+        videoUrl: row.video_url || details?.video_url,
+        user_id: row.user_id || undefined,
     };
 };
 
-// import { FEATURED_ITEMS } from '../data/mockData'; // Not used anymore for fallback
-
 export const getFeaturedProducts = async (): Promise<FeaturedItem[]> => {
-    console.log('API: getFeaturedProducts called');
-
-    // Direct Supabase call without fallback
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    console.log('API: getFeaturedProducts response received', { hasData: !!data, hasError: !!error });
-
-    if (error) {
-        console.error('Error fetching products (Supabase):', error.message || error);
-        throw error; // Throw error to be caught by the component
-    }
-
-    return (data || []).map(transformProduct);
+    const response = await api.get('/api/products');
+    return (response.data || []).map(transformProduct);
 };
 
 export const getProductsByCategory = async (category: string): Promise<FeaturedItem[]> => {
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('category', category)
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching products by category:', error.message || error);
-        throw error;
-    }
-
-    return (data || []).map(transformProduct);
+    // Note: In backend, it might use categoryId. For now filtering by query
+    const response = await api.get(`/api/products?category=${category}`);
+    return (response.data || []).map(transformProduct);
 };
 
 export const getProductById = async (id: string): Promise<FeaturedItem | null> => {
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-    if (error) {
-        console.error('Error fetching product by id:', error.message || error);
-        return null;
-    }
-
-    return data ? transformProduct(data) : null;
+    const response = await api.get(`/api/products/${id}`);
+    return response.data ? transformProduct(response.data) : null;
+};
+export const searchProducts = async (query: string): Promise<FeaturedItem[]> => {
+    const response = await api.get(`/api/products/search?q=${query}`);
+    return (response.data || []).map(transformProduct);
 };
 
-export const searchProducts = async (query: string): Promise<FeaturedItem[]> => {
-    // Supabase text search on JSONB columns is tricky.
-    // For simplicity, we will fetch all recent products and filter in memory if the dataset is small,
-    // OR we can use the `textSearch` filter if we had a full text search column.
-    // Given the current setup with JSONB titles, filtering in memory after fetching a reasonable amount is safest for now,
-    // OR we can use `ilike` on a casted text column if we create a generated column.
+export const getProductsByUser = async (userId: string): Promise<FeaturedItem[]> => {
+    const response = await api.get(`/api/products/user/${userId}`);
+    return (response.data || []).map(transformProduct);
+};
 
-    // Better approach for now: Fetch all high-level items (limit 100) and filter.
-    // Ideally, we should have a `title_en`, `title_ko` column for search.
-    // But since we are using JSONB...
+export const deleteProduct = async (id: string): Promise<void> => {
+    await api.delete(`/api/products/${id}`);
+};
 
-    // Let's try to query where the JSONB logic might be complex.
-    // A simple `ilike` won't work easily on JSONB values without casting.
+export const createProduct = async (productData: any): Promise<{ id: string }> => {
+    const response = await api.post('/api/products', productData);
+    return response.data;
+};
 
-    // Workaround: Select * and filter in client for this MVP.
-    // Production wise: Create a generated column for full text search.
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
-
-    if (error) {
-        console.error('Error searching products:', error);
-        throw error;
-    }
-
-    const allItems = (data || []).map(transformProduct);
-    const lowerQuery = query.toLowerCase();
-
-    // Client-side filtering on the fetched data
-    return allItems.filter((item: FeaturedItem) => {
-        // Check all languages
-        const titleMatch = Object.values(item.title).some((val: unknown) => String(val).toLowerCase().includes(lowerQuery));
-        const descMatch = Object.values(item.description).some((val: unknown) => String(val).toLowerCase().includes(lowerQuery));
-        return titleMatch || descMatch;
-    });
+export const updateProduct = async (id: string, productData: any): Promise<void> => {
+    await api.put(`/api/products/${id}`, productData);
 };

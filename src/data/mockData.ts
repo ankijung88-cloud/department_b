@@ -1,14 +1,60 @@
 import { FeaturedItem, FloorCategory, NavItem } from '../types';
 
 export const NAV_ITEMS: NavItem[] = [
-    { id: 'trend', href: '/trend' },
-    { id: 'tickets', href: '/tickets' },
-    { id: 'art', href: '/art' },
-    { id: 'style', href: '/style' },
-    { id: 'food', href: '/food' },
-    { id: 'travel', href: '/travel' },
-    { id: 'magazine', href: '/magazine' },
-    { id: 'community', href: '/community' },
+    {
+        id: 'trend',
+        href: '/trend',
+        subitems: [
+            { id: 'popup', label: 'popup', href: '/trend?filter=popup' },
+            { id: 'collab', label: 'collab', href: '/trend?filter=collab' },
+            { id: 'new', label: 'new', href: '/trend?filter=new' }
+        ]
+    },
+    {
+        id: 'tickets',
+        href: '/tickets',
+        subitems: [
+            { id: 'performance', label: 'performance', href: '/tickets?filter=performance' },
+            { id: 'exhibition', label: 'exhibition', href: '/tickets?filter=exhibition' },
+            { id: 'booking', label: 'booking', href: '/tickets?filter=booking' }
+        ]
+    },
+    {
+        id: 'art',
+        href: '/art',
+        subitems: [
+            { id: 'class', label: 'class', href: '/art?filter=class' },
+            { id: 'fashion', label: 'fashion', href: '/art?filter=fashion' }
+        ]
+    },
+    {
+        id: 'style',
+        href: '/style',
+        subitems: [
+            { id: 'photo', label: 'photo', href: '/style?filter=photo' },
+            { id: 'video', label: 'video', href: '/style?filter=video' },
+            { id: 'media', label: 'media', href: '/style?filter=media' }
+        ]
+    },
+    {
+        id: 'travel',
+        href: '/travel',
+        subitems: [
+            { id: 'local', label: 'local', href: '/travel?filter=local' },
+            { id: 'course', label: 'course', href: '/travel?filter=course' },
+            { id: 'guide', label: 'guide', href: '/travel?filter=guide' }
+        ]
+    },
+
+    {
+        id: 'community',
+        href: '/community',
+        subitems: [
+            { id: 'notice', label: 'notice', href: '/community?filter=notice' },
+            { id: 'qna', label: 'qna', href: '/community?filter=qna' },
+            { id: 'reviews', label: 'reviews', href: '/community?filter=reviews' }
+        ]
+    },
 ];
 
 export const FLOOR_CATEGORIES: FloorCategory[] = [
@@ -110,16 +156,16 @@ export const FLOOR_CATEGORIES: FloorCategory[] = [
         id: 'art',
         floor: '3F',
         title: {
-            ko: '아트 / 공예',
-            en: 'Art / Craft',
-            ja: 'アート / 工芸',
-            zh: '艺术 / 工艺'
+            ko: '활동 / 스타일',
+            en: 'Activity / Style',
+            ja: 'アクティビティ / スタイル',
+            zh: '活动 / 风格'
         },
         description: {
-            ko: '장인의 숨결이 깃든 작품들.',
-            en: 'Masterpieces imbued with the breath of artisans.',
-            ja: '職人の息吹が宿る作品たち。',
-            zh: '蕴含工匠气息的作品。'
+            ko: '활동과 스타일의 조화.',
+            en: 'Harmony of Activity and Style.',
+            ja: 'アクティビティとスタイルの調和。',
+            zh: '活动与风格的和谐。'
         },
         bgImage: 'https://images.unsplash.com/photo-1517260739337-6799d239ce83?q=80&w=2560&auto=format&fit=crop',
         content: [
@@ -157,16 +203,16 @@ export const FLOOR_CATEGORIES: FloorCategory[] = [
         id: 'style',
         floor: '4F',
         title: {
-            ko: '한복 / 스타일',
-            en: 'K-Style / Hanbok',
-            ja: '韓服 / スタイル',
-            zh: '韩服 / 时尚'
+            ko: '사진 / 영상',
+            en: 'Photo / Video',
+            ja: '写真 / 映像',
+            zh: '照片 / 视频'
         },
         description: {
-            ko: '모던 한복과 K-뷰티의 만남.',
-            en: 'Where modern Hanbok meets K-Beauty.',
-            ja: 'モダン韓服とK-ビューティーの出会い。',
-            zh: '现代韩服与 K-Beauty 的相遇。'
+            ko: '창의적인 시각 예술과 미디어.',
+            en: 'Creative visual arts and media.',
+            ja: '創造的な視覚芸術とメディア。',
+            zh: '创意视觉艺术和媒体。'
         },
         bgImage: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2560&auto=format&fit=crop',
         content: [
@@ -200,56 +246,10 @@ export const FLOOR_CATEGORIES: FloorCategory[] = [
             }
         ]
     },
-    {
-        id: 'food',
-        floor: '5F',
-        title: {
-            ko: '한식 / 다과',
-            en: 'K-Food / Dining',
-            ja: '韓国料理 / 茶菓',
-            zh: '韩食 / 茶点'
-        },
-        description: {
-            ko: '정갈한 한식과 전통 차의 여유.',
-            en: 'Neat Korean food and the leisure of traditional tea.',
-            ja: 'きちんとした韓国料理と伝統茶の余裕。',
-            zh: '精致的韩食与传统茶的闲适。'
-        },
-        bgImage: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2560&auto=format&fit=crop',
-        content: [
-            {
-                type: 'text',
-                value: {
-                    ko: '5층은 한국의 맛을 오감으로 느끼는 미식 공간입니다. 전국 각지의 제철 식재료로 차려낸 정갈한 한식 반상과 다과를 즐길 수 있습니다.',
-                    en: 'The 5th floor is a gourmet space where you can feel the taste of Korea with your five senses. You can enjoy neat Korean meals and refreshments prepared with seasonal ingredients from all over the country.',
-                    ja: '5階は韓国の味を五感で感じる美食空間です。全国各地の旬の食材で作ったきちんとした韓国料理のお膳と茶菓を楽しむことができます。',
-                    zh: '5楼是用五感感受韩国味道的美食空间。可以享受用全国各地的时令食材烹制的精致韩食饭桌和茶点。'
-                }
-            },
-            {
-                type: 'image',
-                value: 'https://images.unsplash.com/photo-1606509036496-0399b1a597a1?q=80&w=2560&auto=format&fit=crop',
-                caption: {
-                    ko: '계절의 맛을 담은 프리미엄 한식 다이닝',
-                    en: 'Premium Korean dining with the taste of the season',
-                    ja: '季節の味を盛り込んだプレミアム韓国料理ダイニング',
-                    zh: '蕴含季节味道的高级韩食餐厅'
-                }
-            },
-            {
-                type: 'text',
-                value: {
-                    ko: '전문 티 소믈리에가 엄선한 전통차와 모던한 디저트의 페어링을 경험해보세요. 쿠킹 클래스에서는 김치와 전통주 담그기 등 다양한 식문화 체험이 가능합니다.',
-                    en: 'Experience the pairing of traditional tea carefully selected by professional tea sommeliers and modern desserts. In the cooking class, you can experience various food cultures such as making kimchi and traditional liquor.',
-                    ja: '専門ティーソムリエが厳選した伝統茶とモダンなデザートのペアリングを体験してみてください。クッキングクラスではキムチや伝統酒作りなど、様々な食文化体験が可能です。',
-                    zh: '请体验专业茶侍酒师严选的传统茶和现代甜点的搭配。在烹饪课程中，可以体验制作辛奇和传统酒等多种饮食文化。'
-                }
-            }
-        ]
-    },
+
     {
         id: 'travel',
-        floor: '6F',
+        floor: '5F',
         title: {
             ko: '로컬 / 여행',
             en: 'Local / Travel',
@@ -317,6 +317,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         id: 'jeonju-hanok',
         title: { ko: '전주 한옥마을 스테이', en: 'Jeonju Hanok Village Stay', ja: '全州韓屋村ステイ', zh: '全州韩屋村住宿' },
         category: 'Travel',
+        subcategory: 'local',
         description: {
             ko: '고즈넉한 한옥에서의 하룻밤. 전통 다도 체험과 비빔밥 만들기 클래스가 포함되어 있습니다.',
             en: 'A night in a quiet Hanok. Includes traditional tea ceremony experience and Bibimbap making class.',
@@ -334,6 +335,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         id: 'bts-exhibition',
         title: { ko: 'K-POP 히스토리 전시', en: 'K-POP History Exhibition', ja: 'K-POPヒストリー展示', zh: 'K-POP历史展览' },
         category: 'Exhibition',
+        subcategory: 'exhibition',
         description: {
             ko: '대한민국 대중음악의 역사를 한눈에 볼 수 있는 특별 기획전.',
             en: 'A special exhibition where you can see the history of Korean popular music at a glance.',
@@ -349,6 +351,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         id: 'pansori-performance',
         title: { ko: '현대적으로 재해석한 판소리: 춘향', en: 'Modernized Pansori: Chunhyang', ja: '現代的に再解釈したパンソリ：春香', zh: '现代再诠释的板索里: 春香' },
         category: 'Performance',
+        subcategory: 'performance',
         description: {
             ko: '전통 판소리에 미디어아트를 결합한 퓨전 국악 공연. 춘향전을 새로운 시각으로 풀어냅니다.',
             en: 'Fusion Korean traditional music performance combining traditional Pansori with media art. Retells Chunhyangjeon from a new perspective.',
@@ -366,6 +369,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         id: 'celadon-workshop',
         title: { ko: '청자 만들기 원데이 클래스', en: 'Celadon Making One-day Class', ja: '青磁作りワンデークラス', zh: '制作青瓷一日课程' },
         category: 'Art',
+        subcategory: 'class',
         description: {
             ko: '나만의 고려청자를 만들어보는 이색 체험. 물레 성형부터 조각까지 직접 경험해보세요.',
             en: 'A unique experience of making your own Goryeo Celadon. Experience everything from wheel throwing to carving.',
@@ -398,6 +402,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         id: 'k-pop-popup',
         title: { ko: '뉴진스(NewJeans) 팝업스토어', en: 'NewJeans Pop-up Store', ja: 'NewJeansポップアップストア', zh: 'NewJeans快闪店' },
         category: 'Trend',
+        subcategory: 'popup',
         description: {
             ko: '글로벌 대세 뉴진스의 공식 굿즈와 한정판 아이템을 만날 수 있는 팝업스토어.',
             en: 'A pop-up store where you can find official goods and limited edition items of the global trend NewJeans.',
@@ -429,7 +434,8 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
     {
         id: 'modern-hanbok',
         title: { ko: '생활한복 F/W 컬렉션', en: 'Modern Hanbok F/W Collection', ja: '生活韓服 F/Wコレクション', zh: '生活韩服 F/W 系列' },
-        category: 'Style',
+        category: 'Art',
+        subcategory: 'fashion',
         description: {
             ko: '일상에서 편하게 입는 현대적인 감각의 생활한복 신상 컬렉션.',
             en: 'New collection of modern Hanbok with a modern sense that is comfortable to wear in everyday life.',
@@ -444,7 +450,8 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
     {
         id: 'k-beauty-consulting',
         title: { ko: '퍼스널 컬러 & K-뷰티 컨설팅', en: 'Personal Color & K-Beauty Consulting', ja: 'パーソナルカラー & K-ビューティーコンサルティング', zh: '个人色彩 & K-Beauty 咨询' },
-        category: 'Style',
+        category: 'Art',
+        subcategory: 'fashion',
         description: {
             ko: '나에게 맞는 색과 메이크업을 찾아주는 1:1 뷰티 컨설팅 서비스.',
             en: '1:1 beauty consulting service that finds the colors and makeup that suit you.',
@@ -457,35 +464,5 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
         price: { ko: '50,000원', en: '50,000 KRW', ja: '50,000ウォン', zh: '50,000韩元' }
     },
 
-    // Food (5F)
-    {
-        id: 'royal-cuisine',
-        title: { ko: '궁중 다과상 체험', en: 'Royal Refreshments Experience', ja: '宮中茶菓膳体験', zh: '宫廷茶点桌体验' },
-        category: 'Food',
-        description: {
-            ko: '임금님이 즐기던 궁중 병과와 전통차를 맛볼 수 있는 프리미엄 다과상.',
-            en: 'Premium refreshments where you can taste the royal cakes and traditional tea that the king enjoyed.',
-            ja: '王様が楽しんだ宮中餅菓子と伝統茶を味わうことができるプレミアム茶菓膳。',
-            zh: '可以品尝国王享用的宫廷糕点和传统茶的高级茶点桌。'
-        },
-        imageUrl: 'https://images.unsplash.com/photo-1606509036496-0399b1a597a1?q=80&w=2560&auto=format&fit=crop',
-        date: { ko: '매일 11:00 - 20:00', en: 'Daily 11:00 - 20:00', ja: '毎日 11:00 - 20:00', zh: '每天 11:00 - 20:00' },
-        location: { ko: '5F 다원', en: '5F Tea House', ja: '5F 茶院', zh: '5F 茶院' },
-        price: { ko: '35,000원', en: '35,000 KRW', ja: '35,000ウォン', zh: '35,000韩元' }
-    },
-    {
-        id: 'vegan-kimchi',
-        title: { ko: '비건 김치 쿠킹 클래스', en: 'Vegan Kimchi Cooking Class', ja: 'ヴィーガンキムチクッキングクラス', zh: '纯素辛奇烹饪课程' },
-        category: 'Food',
-        description: {
-            ko: '외국인도 쉽게 즐길 수 있는 비건 김치 만들기 수업.',
-            en: 'Vegan Kimchi making class that foreigners can easily enjoy.',
-            ja: '外国人も簡単に楽しめるヴィーガンキムチ作り授業。',
-            zh: '外国人也能轻松享受的制作纯素辛奇课程。'
-        },
-        imageUrl: 'https://images.unsplash.com/photo-1583160247711-2191776b4b91?q=80&w=2560&auto=format&fit=crop',
-        date: { ko: '매주 수요일', en: 'Every Wednesday', ja: '毎週水曜日', zh: '每周三' },
-        location: { ko: '5F 쿠킹 스튜디오', en: '5F Cooking Studio', ja: '5F クッキングスタジオ', zh: '5F 烹饪工作室' },
-        price: { ko: '40,000원', en: '40,000 KRW', ja: '40,000ウォン', zh: '40,000韩元' }
-    }
+
 ];

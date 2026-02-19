@@ -1,244 +1,339 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X, Globe, LogOut } from 'lucide-react';
-import { NAV_ITEMS } from '../../data/mockData';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import LoginModal from '../auth/LoginModal';
-import SearchModal from '../common/SearchModal';
+import { User, LogOut, Menu, X, Globe, ChevronDown, Search } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { supportedLanguages } from '../../utils/i18nUtils';
+import SearchModal from '../common/SearchModal';
+import LoginModal from '../auth/LoginModal';
 
-export const Header: React.FC = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { i18n, t } = useTranslation();
+interface SubItem {
+    id: string;
+    label: string;
+    path?: string;
+}
+
+interface NavItem {
+    id: string;
+    label: string;
+    subitems: SubItem[];
+}
+
+const Header: React.FC = () => {
+    const { user, signOut } = useAuth();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
-    const { user, profile, isAdmin, signOut } = useAuth();
-    const isAuthenticated = !!user;
+    // Mobile menu state
+    const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+
+    // Desktop dropdown state
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
+
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
-    const changeLanguage = (lang: string) => {
-        i18n.changeLanguage(lang);
+    const handleLogout = async () => {
+        await signOut();
+        setIsMenuOpen(false);
+    };
+
+    const changeLanguage = (langCode: string) => {
+        i18n.changeLanguage(langCode);
         setIsLangMenuOpen(false);
     };
 
-    const handleLogout = async () => {
-        console.log('handleLogout triggered in Header');
-        await signOut();
-        console.log('signOut finished');
-        setIsUserMenuOpen(false);
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const toggleLangMenu = () => setIsLangMenuOpen(!isLangMenuOpen);
+
+    const toggleMobileSubMenu = (menu: string) => {
+        setExpandedMobileMenu(expandedMobileMenu === menu ? null : menu);
     };
 
-    const languages = [
-        { code: 'ko', label: '한국어' },
-        { code: 'en', label: 'English' },
-        { code: 'ja', label: '日本語' },
-        { code: 'zh', label: '中文' },
+    const getCurrentLangLabel = () => {
+        const current = supportedLanguages.find(lang => lang.code === i18n.language);
+        return current ? current.label : 'English';
+    };
+
+    const navItems: NavItem[] = [
+        {
+            id: 'trend',
+            label: t('nav.trend'),
+            subitems: [
+                { id: 'popup', label: t('nav.popup') },
+                { id: 'collab', label: t('nav.collab') },
+                { id: 'new', label: t('nav.new') }
+            ]
+        },
+        {
+            id: 'tickets',
+            label: t('nav.tickets'),
+            subitems: [
+                { id: 'performance', label: t('nav.performance') },
+                { id: 'booking', label: t('nav.booking') },
+                { id: 'exhibition', label: t('nav.exhibition') }
+            ]
+        },
+        {
+            id: 'art',
+            label: t('nav.art'),
+            subitems: [
+                { id: 'class', label: t('nav.class') },
+                { id: 'fashion', label: t('nav.fashion') }
+            ]
+        },
+        {
+            id: 'style',
+            label: t('nav.style'),
+            subitems: [
+                { id: 'photo', label: t('nav.photo') },
+                { id: 'video', label: t('nav.video') },
+                { id: 'media', label: t('nav.media') }
+            ]
+        },
+        {
+            id: 'travel',
+            label: t('nav.travel'),
+            subitems: [
+                { id: 'local', label: t('nav.local') },
+                { id: 'course', label: t('nav.course') },
+                { id: 'guide', label: t('nav.guide') }
+            ]
+        },
+        {
+            id: 'community',
+            label: t('nav.community'),
+            subitems: [
+                { id: 'notice', label: t('nav.notice'), path: '/notice' },
+                { id: 'qna', label: t('nav.qna'), path: '/qna' },
+                { id: 'reviews', label: t('nav.reviews'), path: '/reviews' }
+            ]
+        }
     ];
 
     return (
         <>
-            <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
-            <SearchModal isOpen={isSearchModalOpen} onClose={() => setIsSearchModalOpen(false)} />
-            <header
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-charcoal/90 backdrop-blur-md py-4 shadow-lg' : 'bg-transparent py-6'
-                    }`}
-            >
-                <div className="container mx-auto px-6 flex items-center justify-between">
-                    {/* Logo */}
-                    <Link to="/" className="text-2xl font-serif font-bold tracking-widest text-white hover:text-dancheong-red transition-colors">
-                        문화백화점
+            <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
+                ? 'bg-black/40 backdrop-blur-md border-b border-white/10 h-16'
+                : 'bg-transparent border-b border-transparent h-20'
+                }`}>
+                <div className={`container mx-auto px-4 flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
+                    <Link to="/" className="text-2xl font-serif font-bold text-white tracking-tighter">
+                        CHWIHYANG-GWAN
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
-                        {NAV_ITEMS.map((item) => (
-                            <Link
+                    <nav className="hidden xl:flex items-center space-x-1">
+                        {navItems.map((item) => (
+                            <div
                                 key={item.id}
-                                to={item.href}
-                                className="text-white/80 hover:text-white hover:border-b-2 hover:border-dancheong-red pb-1 transition-all text-sm font-medium tracking-wide"
+                                className="relative group"
+                                onMouseEnter={() => setActiveDropdown(item.id)}
+                                onMouseLeave={() => setActiveDropdown(null)}
                             >
-                                {t(`nav.${item.id}`)}
-                            </Link>
+                                <button className={`flex items-center text-[13px] font-medium text-white/70 hover:text-white transition-all duration-300 gap-1 px-3 ${isScrolled ? 'h-16' : 'h-20'}`}>
+                                    {item.label}
+                                    <ChevronDown size={12} className={`transition-transform duration-200 ${activeDropdown === item.id ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                <div className={`absolute top-full left-1/2 -translate-x-1/2 w-52 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-300 origin-top ${activeDropdown === item.id ? 'opacity-100 visible translate-y-2 scale-100' : 'opacity-0 invisible translate-y-0 scale-95'}`}>
+                                    <div className="py-3 flex flex-col relative before:absolute before:inset-x-0 before:top-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent">
+                                        {item.subitems.map((sub) => (
+                                            <Link
+                                                key={sub.id}
+                                                to={sub.path || `/${item.id}?filter=${sub.id}`}
+                                                className="px-5 py-2.5 text-sm text-white/50 hover:text-white hover:bg-white/5 transition-all duration-200 text-left relative group/item"
+                                            >
+                                                <span className="relative z-10">{sub.label}</span>
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-0 bg-dancheong-red transition-all duration-200 group-hover/item:h-3/5" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         ))}
                     </nav>
 
-                    {/* Utility Menu */}
-                    <div className="hidden md:flex items-center space-x-6 text-white">
-                        {/* Language Switcher */}
-                        <div className="relative">
-                            <button
-                                className="hover:text-dancheong-red transition-colors flex items-center gap-1"
-                                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                            >
-                                <Globe size={20} />
-                                <span className="text-xs uppercase font-bold">{i18n.language.split('-')[0]}</span>
-                            </button>
-
-                            <AnimatePresence>
-                                {isLangMenuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        className="absolute right-0 top-full mt-2 bg-charcoal border border-white/10 rounded-md shadow-xl overflow-hidden min-w-[120px]"
-                                    >
-                                        {languages.map((lang) => (
-                                            <button
-                                                key={lang.code}
-                                                onClick={() => changeLanguage(lang.code)}
-                                                className={`block w-full text-left px-4 py-2 text-sm hover:bg-white/10 transition-colors ${i18n.language.startsWith(lang.code) ? 'text-dancheong-red font-bold' : 'text-white/80'}`}
-                                            >
-                                                {lang.label}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
+                    {/* User Actions & Utilities */}
+                    <div className="hidden lg:flex items-center space-x-5">
+                        {/* Search */}
                         <button
-                            className="hover:text-dancheong-red transition-colors"
-                            onClick={() => setIsSearchModalOpen(true)}
+                            onClick={() => setIsSearchOpen(true)}
+                            className="text-white/70 hover:text-white transition-colors"
+                            title={t('search.placeholder')}
                         >
                             <Search size={20} />
                         </button>
 
-                        {/* User Menu */}
+                        {/* Language Selector */}
                         <div className="relative">
                             <button
-                                className={`transition-colors ${isAuthenticated ? 'text-dancheong-red' : 'hover:text-dancheong-red'}`}
-                                onClick={() => isAuthenticated ? setIsUserMenuOpen(!isUserMenuOpen) : setIsLoginModalOpen(true)}
+                                onClick={toggleLangMenu}
+                                className="flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors gap-1"
                             >
-                                <User size={20} />
+                                <Globe size={18} />
+                                <span className="hidden xl:inline">{getCurrentLangLabel()}</span>
                             </button>
-                            <AnimatePresence>
-                                {isUserMenuOpen && isAuthenticated && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        className="absolute right-0 top-full mt-2 bg-charcoal border border-white/10 rounded-md shadow-xl overflow-hidden min-w-[150px]"
-                                    >
-                                        <div className="px-4 py-3 border-b border-white/10">
-                                            <p className="text-xs text-white/60">{t('auth.welcome')}</p>
-                                            <p className="text-sm font-bold text-white truncate">{profile?.full_name || user?.email}</p>
-                                        </div>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-dancheong-red transition-colors flex items-center gap-2"
-                                        >
-                                            <LogOut size={14} />
-                                            {t('auth.logout')}
-                                        </button>
-                                        {isAdmin && (
-                                            <Link
-                                                to="/admin/products"
-                                                className="w-full text-left px-4 py-2 text-sm text-dancheong-red hover:bg-white/10 transition-colors flex items-center gap-2 border-t border-white/5"
-                                                onClick={() => setIsUserMenuOpen(false)}
-                                            >
-                                                <User size={14} />
-                                                관리자 패널
-                                            </Link>
-                                        )}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
 
-                        <Link to="/cart" className="hover:text-dancheong-red transition-colors">
-                            <ShoppingBag size={20} />
-                        </Link>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        className="md:hidden text-white"
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    >
-                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
-                </div>
-
-                {/* Mobile Navigation */}
-                <AnimatePresence>
-                    {isMobileMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="md:hidden absolute top-full left-0 right-0 bg-charcoal border-t border-white/10 p-6 shadow-xl"
-                        >
-                            <nav className="flex flex-col space-y-4">
-                                {NAV_ITEMS.map((item) => (
-                                    <Link
-                                        key={item.id}
-                                        to={item.href}
-                                        className="text-white/80 hover:text-dancheong-red text-lg font-medium"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        {t(`nav.${item.id}`)}
-                                    </Link>
-                                ))}
-
-                                {/* Mobile Language Switcher */}
-                                <div className="flex gap-4 pt-4 border-t border-white/10">
-                                    {languages.map((lang) => (
+                            {isLangMenuOpen && (
+                                <div className="absolute top-full right-0 mt-4 w-36 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2 overflow-hidden z-[60] transition-all duration-300 origin-top-right animate-in fade-in zoom-in-95 slide-in-from-top-2">
+                                    <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                                    {supportedLanguages.map((lang) => (
                                         <button
                                             key={lang.code}
                                             onClick={() => changeLanguage(lang.code)}
-                                            className={`text-sm ${i18n.language.startsWith(lang.code) ? 'text-dancheong-red font-bold' : 'text-white/60'}`}
+                                            className={`w-full text-left px-5 py-2.5 text-sm hover:bg-white/5 transition-all duration-200 relative group/lang ${i18n.language === lang.code ? 'text-dancheong-red font-medium' : 'text-white/50 hover:text-white'
+                                                }`}
+                                        >
+                                            <span className="relative z-10">{lang.label}</span>
+                                            {i18n.language === lang.code && (
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-3/5 bg-dancheong-red" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="h-4 w-[1px] bg-white/10" />
+
+                        {user ? (
+                            <div className="flex items-center space-x-5">
+                                <Link to="/mypage" className="text-sm font-medium text-white/70 hover:text-white transition-colors">
+                                    {t('nav.mypage')}
+                                </Link>
+                                <button onClick={handleLogout} className="text-white/70 hover:text-white transition-colors" title={t('auth.logout')}>
+                                    <LogOut size={20} />
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setIsLoginOpen(true)}
+                                className="flex items-center text-sm font-medium text-white/70 hover:text-white transition-colors gap-2"
+                            >
+                                <User size={18} />
+                                <span>{t('nav.login')}</span>
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="flex items-center space-x-4 lg:hidden">
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="text-white/70 hover:text-white"
+                        >
+                            <Search size={22} />
+                        </button>
+                        <button className="text-white" onClick={toggleMenu}>
+                            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu */}
+                {isMenuOpen && (
+                    <div className="lg:hidden bg-black/90 backdrop-blur-xl border-t border-white/10 h-[calc(100vh-64px)] overflow-y-auto animate-in slide-in-from-right duration-300">
+                        <div className="flex flex-col p-6 space-y-6">
+                            {navItems.map((item) => (
+                                <div key={item.id}>
+                                    <button
+                                        onClick={() => toggleMobileSubMenu(item.id)}
+                                        className="flex items-center justify-between w-full text-white/80 hover:text-white text-lg font-medium"
+                                    >
+                                        {item.label}
+                                        <ChevronDown size={20} className={`transition-transform ${expandedMobileMenu === item.id ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    {expandedMobileMenu === item.id && (
+                                        <div className="flex flex-col mt-3 pl-4 space-y-4 border-l border-white/10 ml-1">
+                                            {item.subitems.map((sub) => (
+                                                <Link
+                                                    key={sub.id}
+                                                    to={sub.path || `/${item.id}?filter=${sub.id}`}
+                                                    className="text-white/60 hover:text-white text-base"
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                >
+                                                    {sub.label}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+
+                            <hr className="border-white/10" />
+
+                            {/* Mobile Language Selector */}
+                            <div className="py-2">
+                                <p className="text-xs text-white/40 mb-3 uppercase font-bold tracking-widest">Language</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {supportedLanguages.map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => {
+                                                changeLanguage(lang.code);
+                                                setIsMenuOpen(false);
+                                            }}
+                                            className={`text-center px-3 py-2 rounded-lg text-sm border ${i18n.language === lang.code
+                                                ? 'border-dancheong-red text-dancheong-red bg-dancheong-red/10'
+                                                : 'border-white/10 text-white/60'
+                                                }`}
                                         >
                                             {lang.label}
                                         </button>
                                     ))}
                                 </div>
+                            </div>
 
-                                <div className="pt-4 flex items-center justify-start space-x-6 border-t border-white/10">
-                                    <button
-                                        className="text-white hover:text-dancheong-red"
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            setIsSearchModalOpen(true);
-                                        }}
-                                    >
-                                        <Search size={20} />
-                                    </button>
-                                    <button
-                                        className={`transition-colors ${isAuthenticated ? 'text-dancheong-red' : 'text-white hover:text-dancheong-red'}`}
-                                        onClick={() => {
-                                            if (isAuthenticated) {
-                                                signOut();
-                                                setIsMobileMenuOpen(false);
-                                            } else {
-                                                setIsMobileMenuOpen(false);
-                                                setIsLoginModalOpen(true);
-                                            }
-                                        }}
-                                    >
+                            <hr className="border-white/10" />
+
+                            {user ? (
+                                <div className="flex flex-col space-y-4">
+                                    <Link to="/mypage" className="text-white/80 hover:text-white text-lg font-medium flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
                                         <User size={20} />
-                                        {isAuthenticated && <span className="text-xs ml-1">{profile?.full_name || user?.email?.split('@')[0]}</span>}
-                                    </button>
-                                    <Link to="/cart" className="text-white hover:text-dancheong-red" onClick={() => setIsMobileMenuOpen(false)}>
-                                        <ShoppingBag size={20} />
+                                        {t('nav.mypage')}
                                     </Link>
+                                    <button onClick={handleLogout} className="text-left text-white/80 hover:text-white text-lg font-medium flex items-center gap-2">
+                                        <LogOut size={20} />
+                                        {t('auth.logout')}
+                                    </button>
                                 </div>
-                            </nav>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setIsLoginOpen(true);
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="text-white/80 hover:text-white text-lg font-medium flex items-center gap-2"
+                                >
+                                    <User size={20} />
+                                    {t('nav.login')}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
             </header>
+            {/* Modals moved outside header tag to avoid stacking context issues */}
+            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+            <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
         </>
     );
 };
+
+export default Header;

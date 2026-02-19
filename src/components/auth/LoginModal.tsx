@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Lock, ArrowRight, Loader2, Mail } from 'lucide-react';
-import { supabase } from '../../lib/supabaseClient';
+import api from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 interface LoginModalProps {
@@ -11,6 +12,7 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
+    const { signIn } = useAuth();
     type ViewType = 'LOGIN' | 'SIGNUP' | 'FIND_ID' | 'FORGOT_PASSWORD';
     const [view, setView] = useState<ViewType>('LOGIN');
 
@@ -49,22 +51,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setIsLoading(true);
 
         try {
-            const { data, error: fetchError } = await supabase
-                .from('profiles')
-                .select('email')
-                .eq('full_name', name)
-                .maybeSingle();
-
-            if (fetchError) throw fetchError;
-
-            if (data && data.email) {
-                setSuccessMessage(t('auth.find_email_success', { email: data.email }));
+            const response = await api.get(`/api/auth/find-id`, { params: { name } });
+            if (response.data && response.data.email) {
+                setSuccessMessage(t('auth.find_email_success', { email: response.data.email }));
             } else {
                 setError(t('auth.find_email_not_found'));
             }
         } catch (err: any) {
             console.error(err);
-            setError(err.message || t('auth.error_generic'));
+            setError(err.response?.data?.message || t('auth.error_generic'));
         } finally {
             setIsLoading(false);
         }
@@ -77,14 +72,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setIsLoading(true);
 
         try {
-            const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/admin/login`, // Redirect back to login or a reset page
-            });
-            if (resetError) throw resetError;
+            await api.post('/api/auth/forgot-password', { email });
             setSuccessMessage(t('auth.reset_password_sent'));
         } catch (err: any) {
             console.error(err);
-            setError(err.message || t('auth.error_generic'));
+            setError(err.response?.data?.message || t('auth.error_generic'));
         } finally {
             setIsLoading(false);
         }
@@ -99,28 +91,26 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         try {
             if (view === 'LOGIN') {
-                const { error } = await supabase.auth.signInWithPassword({
+                const response = await api.post('/api/auth/login', {
                     email,
                     password,
                 });
-                if (error) throw error;
+                const { token, user } = response.data;
+                signIn(token, user);
                 onClose();
             } else if (view === 'SIGNUP') {
-                const { error: signUpError } = await supabase.auth.signUp({
+                await api.post('/api/auth/register', {
                     email,
                     password,
-                    options: {
-                        data: {
-                            full_name: name,
-                        }
-                    }
+                    name
                 });
-                if (signUpError) throw signUpError;
-                onClose();
+                setSuccessMessage(t('auth.signup_success_check_email'));
+                // Automaticaly switching to login after registration or similar can be handled
             }
         } catch (err: any) {
-            console.error(err);
-            setError(err.message || t('auth.error_generic'));
+            console.error('Auth Error:', err);
+            const message = err.response?.data?.message || err.message;
+            setError(message || t('auth.error_generic'));
         } finally {
             setIsLoading(false);
         }
@@ -155,13 +145,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] grid place-items-center p-4"
                     >
                         {/* Modal Container */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            initial={{ opacity: 0, scale: 0.9, y: 40 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 40 }}
                             onClick={(e) => e.stopPropagation()}
                             className="bg-[#1a1a1a] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/10 relative"
                         >

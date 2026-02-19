@@ -14,3 +14,10 @@ export const getLocalizedText = (obj: LocalizedString | string, lang: string): s
     // Fallback to 'ko' or 'en' or first available
     return obj['ko'] || obj['en'] || Object.values(obj)[0] || '';
 };
+
+export const supportedLanguages = [
+    { code: 'ko', label: '한국어' },
+    { code: 'en', label: 'English' },
+    { code: 'ja', label: '日本語' },
+    { code: 'zh', label: '中文' },
+];

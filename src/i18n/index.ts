@@ -9,14 +9,36 @@ const resources = {
             "floor_guide": "층별 안내",
             "floor_guide_subtitle": "Floor Guide",
             "nav": {
+                "login": "로그인",
+                "mypage": "마이페이지",
+                "about": "소개",
+                "store": "스토어",
+                "gallery": "CHWIHYANG-GWAN",
                 "trend": "트렌드 / 팝업",
                 "tickets": "공연 / 전시",
-                "art": "아트 / 공예",
-                "style": "한복 / 스타일",
-                "food": "한식 / 다과",
-                "travel": "로컬 / 여행",
-                "magazine": "매거진",
-                "community": "커뮤니티"
+                "art": "활동 / 스타일",
+                "style": "사진 / 영상",
+                "travel": "여행 / 로컬",
+                "community": "커뮤니티",
+
+                "popup": "팝업스토어",
+                "collab": "콜라보레이션",
+                "new": "신상품",
+                "performance": "공연",
+                "exhibition": "전시",
+                "booking": "예매하기",
+                "class": "클래스",
+                "fashion": "스타일",
+                "photo": "사진",
+                "video": "영상",
+                "media": "미디어",
+                "local": "로컬 명소",
+                "course": "추천 코스",
+                "guide": "가이드",
+
+                "notice": "공지사항",
+                "qna": "Q&A",
+                "reviews": "후기"
             },
             "category": {
                 "trend": {
@@ -28,38 +50,32 @@ const resources = {
                     "description": "감동과 전율이 있는 무대, 예술을 만나는 시간"
                 },
                 "art": {
-                    "title": "아트 / 공예",
-                    "description": "장인의 숨결과 현대적 감각의 조화"
+                    "title": "활동 / 스타일",
+                    "description": "활동과 스타일의 조화"
                 },
                 "style": {
-                    "title": "한복 / 스타일",
-                    "description": "전통의 멋과 현대적 감각의 만남"
-                },
-                "food": {
-                    "title": "한식 / 다과",
-                    "description": "한국의 맛과 멋을 즐기는 미식 여행"
+                    "title": "사진 / 영상",
+                    "description": "창의적인 시각 예술과 미디어"
                 },
                 "travel": {
                     "title": "로컬 / 여행",
                     "description": "대한민국 구석구석, 숨겨진 아름다움을 찾아서"
                 },
-                "magazine": {
-                    "title": "매거진",
-                    "description": "깊이 있는 시선으로 바라본 K-컬처 이야기"
-                },
+
                 "community": {
                     "title": "커뮤니티",
                     "description": "취향을 나누고 함께 즐기는 공간"
                 }
             },
             "hero": {
-                "title": "한국의 미, 현대적 감각으로 만나다",
-                "subtitle": "전통과 현대가 공존하는 복합문화공간, Culture Dept.",
+                "title": "시선과 취향이 만나는 곳",
+                "subtitle": "시선 끝에 맺힌 세상이 당신의 취향으로 완성되는 과정을 경험해 보십시오, Culture Dept.",
                 "cta": "층별 안내 보기"
             },
             "featured": {
                 "title": "추천 & 이벤트",
-                "subtitle": "Culture Dept.에서 만나는 특별한 경험"
+                "subtitle": "Culture Dept.에서 만나는 특별한 경험",
+                "no_content": "등록된 콘텐츠가 없습니다."
             },
             "auth": {
                 "login": "로그인",
@@ -83,7 +99,9 @@ const resources = {
                 "find_email_success": "사용자님의 이메일은 {{email}} 입니다.",
                 "find_email_not_found": "해당 정보로 등록된 계정을 찾을 수 없습니다.",
                 "social_login": "간편 로그인",
-                "google_login": "Google로 계속하기"
+                "google_login": "Google로 계속하기",
+                "signup_success_check_email": "회원가입이 완료되었습니다! 이메일을 확인하여 계정을 인증해 주세요.",
+                "rate_limit_exceeded": "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요."
             },
             "footer": {
                 "address": "서울특별시 중구 소공로 123",
@@ -101,20 +119,46 @@ const resources = {
             },
             "common": {
                 "view_all": "전체 보기",
-                "view_details": "자세히 보기",
-                "date": "기간",
+                "view_details": "상세 내역",
+                "date": "일정",
                 "location": "장소",
-                "price": "가격",
-                "loading": "로드 중...",
+                "price": "금액",
+                "loading": "로딩 중...",
                 "error": "오류가 발생했습니다.",
                 "no_content": "콘텐츠가 없습니다.",
-                "back_home": "홈으로 가기",
-                "back": "돌아가기",
+                "back_home": "홈으로 돌아가기",
+                "back": "뒤로",
                 "booking": "예매하기",
-                "share": "공유하기",
+                "share": "기획전 공유",
                 "duration": "소요 시간",
                 "duration_value": "약 90분",
                 "detail_intro": "상세 소개",
+                "product": "상품명",
+                "select_date": "날짜 선택",
+                "download": "상품 다운로드",
+                "delete": "삭제",
+                "payment": {
+                    "method": "결제 방식 선택",
+                    "credit_card": "신용카드",
+                    "card": "신용카드",
+                    "realtime_transfer": "실시간 계좌이체",
+                    "trans": "실시간 계좌이체",
+                    "bank_transfer": "무통장 입금 (계좌이체)",
+                    "on_site": "현장 결제 / 기타",
+                    "confirm": "결제하기",
+                    "success": "결제를 완료했습니다",
+                    "info": "결제 정보 확인",
+                    "close": "닫기",
+                    "verifying": "결제 확인 중",
+                    "waiting_approval": "승인 대기 중",
+                    "confirmed": "승인 완료",
+                    "request_settle": "정산 요청",
+                    "settlement_requested": "정산 요청됨",
+                    "bank_info": "입금 계좌 정보",
+                    "bank_name": "은행명",
+                    "account_number": "계좌번호",
+                    "account_holder": "예금주"
+                },
                 "share_modal": {
                     "title": "공유하기",
                     "copy_link": "링크 복사",
@@ -126,22 +170,99 @@ const resources = {
                         "more": "더보기"
                     }
                 },
-                "payment": {
-                    "method": "결제 방식 선택",
-                    "bank_transfer": "계좌이체",
-                    "on_site": "현장결제",
-                    "confirm": "결제하기",
-                    "success": "예매가 완료되었습니다.",
-                    "info": "예매 정보",
-                    "bank_info": "입금 계좌: 신한은행 123-456-789012 (예금주: Culture Dept)",
-                    "close": "닫기"
-                }
+                "register_product": "상품 등록",
+                "guest": "게스트"
             },
             "search": {
                 "placeholder": "검색어를 입력하세요...",
                 "no_results": "검색 결과가 없습니다.",
                 "results_for": "'{{query}}'에 대한 검색 결과",
                 "close": "닫기"
+            },
+            "admin": {
+                "sidebar": {
+                    "title": "관리자 시스템",
+                    "products": "상품 관리",
+                    "users": "회원 관리",
+                    "bookings": "예약 및 정산",
+                    "logout": "로그아웃"
+                },
+                "product": {
+                    "title": "상품 관리",
+                    "add": "상품 등록",
+                    "edit": "상품 수정",
+                    "delete_confirm": "정말로 이 상품을 삭제하시겠습니까?",
+                    "search_placeholder": "상품명으로 검색...",
+                    "table": {
+                        "image": "이미지",
+                        "title": "상품명",
+                        "category": "카테고리",
+                        "price": "가격",
+                        "actions": "관리"
+                    },
+                    "form": {
+                        "basic_info": "기본 정보",
+                        "content_details": "상세 내용",
+                        "image_label": "상품 이미지",
+                        "video_label": "YouTube 영상 URL (선택)",
+                        "main_category": "메인 카테고리 (층)",
+                        "sub_category": "서브 카테고리",
+                        "manage_closed": "휴무일 관리",
+                        "closed_description": "달력에서 날짜를 클릭하여 휴무일을 설정하세요. (빨간색: 휴무)",
+                        "selected_closed": "선택된 휴무일",
+                        "no_closed": "선택된 휴무일이 없습니다.",
+                        "save": "저장하기",
+                        "saving": "저장 중...",
+                        "upload_image": "이미지 업로드",
+                        "uploading": "업로드 중...",
+                        "replace_image": "이미지 교체",
+                        "closed_day": "휴무일",
+                        "open_day": "영업일"
+                    }
+                },
+                "user": {
+                    "title": "회원 관리",
+                    "subtitle": "전체 회원 관리 및 권한 설정",
+                    "search_placeholder": "이름 또는 이메일 검색",
+                    "table": {
+                        "user": "사용자",
+                        "email": "이메일",
+                        "role": "권한",
+                        "actions": "관리"
+                    },
+                    "promote": "승격",
+                    "demote": "강등",
+                    "delete": "삭제",
+                    "no_users": "검색된 회원이 없습니다."
+                },
+                "booking": {
+                    "title": "예약 및 정산 관리",
+                    "filter": {
+                        "status": "상태",
+                        "payment": "결제 수단",
+                        "search": "검색 (이메일)",
+                        "from": "시작일",
+                        "to": "종료일",
+                        "all_status": "전체 상태",
+                        "all_methods": "전체 결제 수단"
+                    },
+                    "table": {
+                        "date": "예약일",
+                        "user": "사용자",
+                        "product": "상품 / 카테고리",
+                        "payment": "결제",
+                        "amount": "결제 금액",
+                        "settlement": "정산 예정 (90%)",
+                        "status": "상태 / 정산",
+                        "actions": "관리"
+                    },
+                    "settle": "정산하기",
+                    "settle_confirm": "이 결제 건을 정산하시겠습니까? 10% 수수료가 제외됩니다.",
+                    "settle_error": "정산 처리에 실패했습니다.",
+                    "settled": "정산 완료",
+                    "pending_settle": "정산 대기",
+                    "delete_confirm": "본 판매 내역을 목록에서 삭제하시겠습니까?"
+                }
             }
         }
     },
@@ -150,14 +271,36 @@ const resources = {
             "floor_guide": "Floor Guide",
             "floor_guide_subtitle": "Floor Guide",
             "nav": {
+                "about": "About",
+                "store": "Store",
+                "gallery": "Taste Gallery",
                 "trend": "K-Trend / Pop-up",
                 "tickets": "Tickets",
-                "art": "Art / Craft",
-                "style": "K-Style / Hanbok",
-                "food": "K-Food / Dining",
+                "art": "Activity / Style",
+                "style": "Photo / Video",
                 "travel": "Local / Travel",
-                "magazine": "Magazine",
-                "community": "Community"
+
+                "community": "Community",
+                "popup": "Pop-up Store",
+                "collab": "Collaboration",
+                "new": "New Arrivals",
+                "performance": "Performance",
+                "exhibition": "Exhibition",
+                "booking": "Booking",
+                "class": "Class",
+                "fashion": "Style",
+                "photo": "Photo",
+                "video": "Video",
+                "media": "Media",
+                "local": "Local Spots",
+                "course": "Courses",
+                "guide": "Guide",
+
+                "notice": "Notice",
+                "qna": "Q&A",
+                "reviews": "Reviews",
+                "mypage": "My Page",
+                "login": "Login"
             },
             "category": {
                 "trend": {
@@ -169,25 +312,18 @@ const resources = {
                     "description": "A stage with emotion and thrill, time to meet art"
                 },
                 "art": {
-                    "title": "Art / Craft",
-                    "description": "Harmony of artisan's breath and modern sense"
+                    "title": "Activity / Style",
+                    "description": "Harmony of Activity and Style"
                 },
                 "style": {
-                    "title": "K-Style / Hanbok",
-                    "description": "Meeting of traditional beauty and modern sense"
-                },
-                "food": {
-                    "title": "K-Food / Dining",
-                    "description": "Gourmet trip enjoying the taste and style of Korea"
+                    "title": "Photo / Video",
+                    "description": "Creative visual arts and media"
                 },
                 "travel": {
                     "title": "Local / Travel",
                     "description": "Finding hidden beauty in every corner of Korea"
                 },
-                "magazine": {
-                    "title": "Magazine",
-                    "description": "K-Culture stories viewed with deep insight"
-                },
+
                 "community": {
                     "title": "Community",
                     "description": "Space to share tastes and enjoy together"
@@ -200,7 +336,8 @@ const resources = {
             },
             "featured": {
                 "title": "Featured & Events",
-                "subtitle": "Special Experiences at Culture Dept."
+                "subtitle": "Special Experiences at Culture Dept.",
+                "no_content": "No content registered yet."
             },
             "auth": {
                 "login": "Login",
@@ -224,7 +361,9 @@ const resources = {
                 "find_email_success": "Your email is {{email}}.",
                 "find_email_not_found": "No account found with this information.",
                 "social_login": "Social Login",
-                "google_login": "Continue with Google"
+                "google_login": "Continue with Google",
+                "signup_success_check_email": "Signup successful! Please check your email to confirm your account.",
+                "rate_limit_exceeded": "Too many requests. Please try again later."
             },
             "footer": {
                 "address": "123 Sogong-ro, Jung-gu, Seoul",
@@ -275,14 +414,101 @@ const resources = {
                     "success": "Booking Completed",
                     "info": "Booking Info",
                     "bank_info": "Account: Shinhan Bank 123-456-789012 (Holder: Culture Dept)",
-                    "close": "Close"
-                }
+                    "close": "Close",
+                    "download": "Download"
+                },
+                "register_product": "Register Product",
+                "guest": "Guest"
             },
             "search": {
                 "placeholder": "Enter search term...",
                 "no_results": "No results found.",
                 "results_for": "Search results for '{{query}}'",
                 "close": "Close"
+            },
+            "admin": {
+                "sidebar": {
+                    "title": "Store Admin",
+                    "products": "Products",
+                    "users": "Users",
+                    "bookings": "Bookings",
+                    "logout": "Sign Out"
+                },
+                "product": {
+                    "title": "Product Management",
+                    "add": "Add Product",
+                    "edit": "Edit Product",
+                    "delete_confirm": "Are you sure you want to delete this product?",
+                    "search_placeholder": "Search by title...",
+                    "table": {
+                        "image": "Image",
+                        "title": "Title",
+                        "category": "Category",
+                        "price": "Price",
+                        "actions": "Actions"
+                    },
+                    "form": {
+                        "basic_info": "Basic Info",
+                        "content_details": "Content Details",
+                        "image_label": "Product Image",
+                        "video_label": "YouTube Video URL (Optional)",
+                        "main_category": "Main Category (Floor)",
+                        "sub_category": "Sub Category",
+                        "manage_closed": "Manage Closed Days",
+                        "closed_description": "Click on dates to toggle them as closed days. Red indicates closed.",
+                        "selected_closed": "Selected Closed Days",
+                        "no_closed": "No closed days selected.",
+                        "save": "Save Product",
+                        "saving": "Saving...",
+                        "upload_image": "Upload Image",
+                        "uploading": "Uploading...",
+                        "replace_image": "Replace Image",
+                        "closed_day": "Closed Day",
+                        "open_day": "Open Day"
+                    }
+                },
+                "user": {
+                    "title": "User Management",
+                    "subtitle": "Management of all users and permissions",
+                    "search_placeholder": "Search name or email",
+                    "table": {
+                        "user": "User",
+                        "email": "Email",
+                        "role": "Role",
+                        "actions": "Actions"
+                    },
+                    "promote": "Promote",
+                    "demote": "Demote",
+                    "delete": "Delete",
+                    "no_users": "No users found."
+                },
+                "booking": {
+                    "title": "Bookings & Settlements",
+                    "filter": {
+                        "status": "Status",
+                        "payment": "Payment Method",
+                        "search": "Search (Email)",
+                        "from": "From Date",
+                        "to": "To Date",
+                        "all_status": "All Status",
+                        "all_methods": "All Methods"
+                    },
+                    "table": {
+                        "date": "Date",
+                        "user": "User",
+                        "product": "Product / Category",
+                        "payment": "Payment",
+                        "amount": "Amount",
+                        "settlement": "Settlement (90%)",
+                        "status": "Status / Settlement",
+                        "actions": "Admin Actions"
+                    },
+                    "settle": "Settle",
+                    "settle_confirm": "Are you sure you want to settle this payment? This will calculate a 10% commission.",
+                    "settle_error": "Failed to settle booking.",
+                    "settled": "Settled",
+                    "pending_settle": "Pending"
+                }
             }
         }
     },
@@ -291,14 +517,36 @@ const resources = {
             "floor_guide": "フロアガイド",
             "floor_guide_subtitle": "Floor Guide",
             "nav": {
+                "about": "紹介",
+                "store": "ストア",
+                "gallery": "趣向館",
                 "trend": "トレンド / ポップアップ",
                 "tickets": "公演 / 展示",
-                "art": "アート / 工芸",
-                "style": "韓服 / スタイル",
-                "food": "韓国料理 / 茶菓",
+                "art": "アート / スタイル",
+                "style": "写真 / 映像",
                 "travel": "ローカル / 旅行",
-                "magazine": "マガジン",
-                "community": "コミュニティ"
+
+                "community": "コミュニティ",
+                "popup": "ポップアップストア",
+                "collab": "コラボレーション",
+                "new": "新商品",
+                "performance": "公演",
+                "exhibition": "展示",
+                "booking": "予約",
+                "class": "クラス",
+                "fashion": "スタイル",
+                "photo": "写真",
+                "video": "映像",
+                "media": "メディア",
+                "local": "ローカル名所",
+                "course": "おすすめコース",
+                "guide": "ガイド",
+
+                "notice": "お知らせ",
+                "qna": "Q&A",
+                "reviews": "レビュー",
+                "mypage": "マイページ",
+                "login": "ログイン"
             },
             "category": {
                 "trend": {
@@ -310,25 +558,18 @@ const resources = {
                     "description": "感動と戦慄のある舞台、芸術に出会う時間"
                 },
                 "art": {
-                    "title": "アート / 工芸",
-                    "description": "職人の息吹と現代的感覚の調和"
+                    "title": "アート / スタイル",
+                    "description": "芸術とスタイルの調和"
                 },
                 "style": {
-                    "title": "韓服 / スタイル",
-                    "description": "伝統の粋と現代的感覚の出会い"
-                },
-                "food": {
-                    "title": "韓国料理 / 茶菓",
-                    "description": "韓国の味と粋を楽しむ美食旅行"
+                    "title": "写真 / 映像",
+                    "description": "創造的な視覚芸術とメディア"
                 },
                 "travel": {
                     "title": "ローカル / 旅行",
                     "description": "大韓民国の隅々、隠された美しさを探して"
                 },
-                "magazine": {
-                    "title": "マガジン",
-                    "description": "深い視線で見つめたK-カルストーリー"
-                },
+
                 "community": {
                     "title": "コミュニティ",
                     "description": "好みを分かち合い、一緒に楽しむ空間"
@@ -341,7 +582,8 @@ const resources = {
             },
             "featured": {
                 "title": "おすすめ & イベント",
-                "subtitle": "Culture Dept.で出会う特別な体験"
+                "subtitle": "Culture Dept.で出会う特別な体験",
+                "no_content": "登録されたコンテンツがありません。"
             },
             "auth": {
                 "login": "ログイン",
@@ -360,7 +602,9 @@ const resources = {
                 "loading": "処理中...",
                 "error_generic": "エラーが発生しました。",
                 "social_login": "簡単ログイン",
-                "google_login": "Googleで続行"
+                "google_login": "Googleで続行",
+                "signup_success_check_email": "登録が完了しました！メールを確認してアカウントを認証してください。",
+                "rate_limit_exceeded": "リクエストが多すぎます。しばらくしてからもう一度お試しください。"
             },
             "footer": {
                 "address": "ソウル特別市中区小公路123",
@@ -391,7 +635,9 @@ const resources = {
                 "share": "共有する",
                 "duration": "所要時間",
                 "duration_value": "約90分",
-                "detail_intro": "詳細紹介"
+                "detail_intro": "詳細紹介",
+                "download": "ダウンロード",
+                "register_product": "商品登録"
             },
             "search": {
                 "placeholder": "検索語を入力してください...",
@@ -406,14 +652,36 @@ const resources = {
             "floor_guide": "楼层指南",
             "floor_guide_subtitle": "Floor Guide",
             "nav": {
+                "about": "介绍",
+                "store": "商店",
+                "gallery": "趣味馆",
                 "trend": "流行趋势 / 快闪店",
                 "tickets": "演出 / 展览",
-                "art": "艺术 / 工艺",
-                "style": "韩服 / 时尚",
-                "food": "韩食 / 茶点",
+                "art": "艺术 / 风格",
+                "style": "照片 / 视频",
                 "travel": "本地 / 旅游",
-                "magazine": "杂志",
-                "community": "社区"
+
+                "community": "社区",
+                "popup": "快闪店",
+                "collab": "合作",
+                "new": "新商品",
+                "performance": "演出",
+                "exhibition": "展览",
+                "booking": "预订",
+                "class": "课程",
+                "fashion": "风格",
+                "photo": "照片",
+                "video": "视频",
+                "media": "媒体",
+                "local": "本地名胜",
+                "course": "推荐路线",
+                "guide": "指南",
+
+                "notice": "公告",
+                "qna": "问答",
+                "reviews": "评论",
+                "mypage": "个人中心",
+                "login": "登录"
             },
             "category": {
                 "trend": {
@@ -425,25 +693,18 @@ const resources = {
                     "description": "充满感动和战栗的舞台，与艺术相遇的时间"
                 },
                 "art": {
-                    "title": "艺术 / 工艺",
-                    "description": "工匠气息与现代感的和谐"
+                    "title": "艺术 / 风格",
+                    "description": "艺术与风格的和谐"
                 },
                 "style": {
-                    "title": "韩服 / 时尚",
-                    "description": "传统之美与现代感的相遇"
-                },
-                "food": {
-                    "title": "韩食 / 茶点",
-                    "description": "享受韩国味道和风韵的美食旅行"
+                    "title": "照片 / 视频",
+                    "description": "创意视觉艺术和媒体"
                 },
                 "travel": {
                     "title": "本地 / 旅游",
                     "description": "寻找韩国各个角落隐藏的美丽"
                 },
-                "magazine": {
-                    "title": "杂志",
-                    "description": "以深刻的视线看待的K-Culture故事"
-                },
+
                 "community": {
                     "title": "社区",
                     "description": "分享喜好并一起享受的空间"
@@ -456,7 +717,8 @@ const resources = {
             },
             "featured": {
                 "title": "推荐 & 活动",
-                "subtitle": "在 Culture Dept. 遇见的特别体验"
+                "subtitle": "在 Culture Dept. 遇见的特别体验",
+                "no_content": "暂无已注册的内容。"
             },
             "auth": {
                 "login": "登录",
@@ -475,7 +737,9 @@ const resources = {
                 "loading": "处理中...",
                 "error_generic": "发生错误。",
                 "social_login": "快捷登录",
-                "google_login": "使用 Google 继续"
+                "google_login": "使用 Google 继续",
+                "signup_success_check_email": "注册成功！请检查您的电子邮件以确认您的帐户。",
+                "rate_limit_exceeded": "请求过多。请稍后再试。"
             },
             "footer": {
                 "address": "首尔特别市中区小公路123",
@@ -506,7 +770,9 @@ const resources = {
                 "share": "分享",
                 "duration": "所需时间",
                 "duration_value": "约90分钟",
-                "detail_intro": "详细介绍"
+                "detail_intro": "详细介绍",
+                "download": "下载",
+                "register_product": "注册商品"
             },
             "search": {
                 "placeholder": "请输入搜索词...",

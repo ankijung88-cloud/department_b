@@ -1,21 +1,26 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { User, Session } from '@supabase/supabase-js';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface Profile {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
     role: 'USER' | 'ADMIN';
+    email?: string;
+}
+
+interface User {
+    id: string;
+    email: string;
+    name: string;
 }
 
 interface AuthContextType {
     user: User | null;
     profile: Profile | null;
-    session: Session | null;
     loading: boolean;
     isAdmin: boolean;
     signOut: () => Promise<void>;
+    signIn: (token: string, userData: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,124 +28,67 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [profile, setProfile] = useState<Profile | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const fetchProfile = useCallback(async (userId: string) => {
-        try {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .single();
-
-            if (error) {
-                // If the error is 'PGRST116' (no rows found), it means the profile doesn't exist yet
-                // This can happen if the sync script wasn't run or trigger failed.
-                if (error.code === 'PGRST116') {
-                    console.warn('Profile not found for user:', userId);
-                    return null;
-                }
-                throw error;
-            }
-            return data as Profile;
-        } catch (error: any) {
-            console.error('Error fetching profile:', error.message || error);
-            return null;
-        }
-    }, []);
-
     useEffect(() => {
-        let mounted = true;
-
-        const initializeAuth = async () => {
+        const initializeAuth = () => {
             try {
-                const { data: { session: initialSession } } = await supabase.auth.getSession();
+                const storedToken = localStorage.getItem('auth_token');
+                const storedUser = localStorage.getItem('auth_user');
 
-                if (!mounted) return;
-
-                setSession(initialSession);
-                setUser(initialSession?.user ?? null);
-
-                if (initialSession?.user) {
-                    const profileData = await fetchProfile(initialSession.user.id);
-                    if (mounted) {
-                        setProfile(profileData);
-                    }
+                if (storedToken && storedUser) {
+                    const parsedUser = JSON.parse(storedUser);
+                    setUser(parsedUser);
+                    // In a real app, we might verify the token here
+                    // For now, mapping simplified Profile based on User
+                    setProfile({
+                        id: parsedUser.id,
+                        full_name: parsedUser.name,
+                        avatar_url: null,
+                        role: parsedUser.email.includes('admin') ? 'ADMIN' : 'USER', // simplified
+                        email: parsedUser.email
+                    });
                 }
             } catch (err) {
                 console.error('Auth initialization error:', err);
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
             } finally {
-                if (mounted) {
-                    setLoading(false);
-                }
+                setLoading(false);
             }
         };
 
         initializeAuth();
+    }, []);
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-            if (!mounted) return;
-
-            setSession(currentSession);
-            setUser(currentSession?.user ?? null);
-
-            if (currentSession?.user) {
-                const profileData = await fetchProfile(currentSession.user.id);
-                if (mounted) {
-                    setProfile(profileData);
-                }
-            } else {
-                setProfile(null);
-            }
-
-            if (event === 'SIGNED_OUT') {
-                if (mounted) {
-                    setLoading(false);
-                }
-            }
+    const signIn = (token: string, userData: User) => {
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_user', JSON.stringify(userData));
+        setUser(userData);
+        setProfile({
+            id: userData.id,
+            full_name: userData.name,
+            avatar_url: null,
+            role: userData.email.includes('admin') ? 'ADMIN' : 'USER',
+            email: userData.email
         });
-
-        return () => {
-            mounted = false;
-            subscription.unsubscribe();
-        };
-    }, [fetchProfile]);
+    };
 
     const signOut = async () => {
-        console.log('AuthContext: Force signOut starting...');
-
-        // 1. Clear state locally first (UI reacts immediately)
-        setSession(null);
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_user');
         setUser(null);
         setProfile(null);
-
-        // 2. Clear all possible Supabase tokens from localStorage
-        Object.keys(localStorage).forEach(key => {
-            if (key.includes('supabase.auth.token') || key.startsWith('sb-')) {
-                localStorage.removeItem(key);
-            }
-        });
-
-        console.log('AuthContext: Local state cleared');
-
-        try {
-            // 3. Attempt server-side signOut (asynchronous, non-blocking)
-            supabase.auth.signOut().catch(err => console.error('Server-side logout failed:', err));
-        } finally {
-            console.log('AuthContext: Redirecting to home...');
-            // 4. Force reload/redirect to ensure all contexts are reset
-            window.location.href = '/';
-        }
+        window.location.href = '/';
     };
 
     const value = {
         user,
         profile,
-        session,
         loading,
         isAdmin: profile?.role === 'ADMIN',
         signOut,
+        signIn,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,15 +1,16 @@
 import React from 'react';
-import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
-import { LogOut, Package, Plus } from 'lucide-react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { LogOut, Package, User as UserIcon, Wallet } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AdminLayout: React.FC = () => {
-    const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
+    const { signOut } = useAuth();
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
-        navigate('/admin/login');
+        await signOut();
     };
 
     const isActive = (path: string) => location.pathname === path;
@@ -19,7 +20,7 @@ const AdminLayout: React.FC = () => {
             {/* Sidebar */}
             <aside className="w-64 bg-[#2a2a2a] border-r border-white/5 flex flex-col">
                 <div className="p-6 border-b border-white/5">
-                    <h1 className="text-xl font-serif font-bold text-white">Store Admin</h1>
+                    <h1 className="text-xl font-serif font-bold text-white">{t('admin.sidebar.title')}</h1>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
@@ -29,15 +30,23 @@ const AdminLayout: React.FC = () => {
                             }`}
                     >
                         <Package size={20} className="mr-3" />
-                        Products
+                        {t('admin.sidebar.products')}
                     </Link>
                     <Link
-                        to="/admin/products/new"
-                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/products/new') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                        to="/admin/users"
+                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/users') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
                             }`}
                     >
-                        <Plus size={20} className="mr-3" />
-                        Add Product
+                        <UserIcon size={20} className="mr-3" />
+                        {t('admin.sidebar.users')}
+                    </Link>
+                    <Link
+                        to="/admin/bookings"
+                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/bookings') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            }`}
+                    >
+                        <Wallet size={20} className="mr-3" />
+                        {t('admin.sidebar.bookings')}
                     </Link>
                 </nav>
 
@@ -47,7 +56,7 @@ const AdminLayout: React.FC = () => {
                         className="flex items-center w-full p-3 text-white/60 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                     >
                         <LogOut size={20} className="mr-3" />
-                        Sign Out
+                        {t('admin.sidebar.logout')}
                     </button>
                 </div>
             </aside>

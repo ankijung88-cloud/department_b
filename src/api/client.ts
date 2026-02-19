@@ -1,16 +1,18 @@
 import axios from 'axios';
 
-const client = axios.create({
-    baseURL: 'http://localhost:3000/api',
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+const api = axios.create({
+    baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Add a request interceptor to attach the token
-client.interceptors.request.use(
+// Request interceptor to add the JWT token to headers
+api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('auth_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -21,4 +23,17 @@ client.interceptors.request.use(
     }
 );
 
-export default client;
+// Response interceptor to handle errors
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Handle unauthorized (e.g., redirect to login or clear token)
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default api;

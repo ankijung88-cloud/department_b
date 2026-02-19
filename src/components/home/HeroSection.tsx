@@ -9,7 +9,7 @@ export const HeroSection: React.FC = () => {
     const [isFloorGuideModalOpen, setIsFloorGuideModalOpen] = React.useState(false);
 
     return (
-        <section className="relative h-screen w-full overflow-hidden">
+        <section id="hero" className="relative h-screen w-full overflow-hidden">
             {/* Background Image */}
             <div
                 className="absolute inset-0 bg-cover bg-center z-0"

@@ -22,6 +22,7 @@ export interface Database {
                     price: Json
                     closed_days: Json
                     video_url?: string
+                    user_id?: string
                 }
                 Insert: {
                     id?: string
@@ -35,6 +36,7 @@ export interface Database {
                     price: Json
                     closed_days?: Json
                     video_url?: string
+                    user_id?: string
                 }
                 Update: {
                     id?: string
@@ -47,6 +49,7 @@ export interface Database {
                     location?: Json
                     price?: Json
                     closed_days?: Json
+                    user_id?: string
                 }
             },
             bookings: {
@@ -58,6 +61,10 @@ export interface Database {
                     payment_method: string
                     status: string
                     total_price: Json
+                    settlement_status?: string
+                    commission_amount?: number
+                    settled_amount?: number
+                    settled_at?: string
                 }
                 Insert: {
                     id?: string
@@ -67,6 +74,10 @@ export interface Database {
                     payment_method: string
                     status?: string
                     total_price: Json
+                    settlement_status?: string
+                    commission_amount?: number
+                    settled_amount?: number
+                    settled_at?: string
                 }
                 Update: {
                     id?: string
@@ -76,6 +87,10 @@ export interface Database {
                     payment_method?: string
                     status?: string
                     total_price?: Json
+                    settlement_status?: string
+                    commission_amount?: number
+                    settled_amount?: number
+                    settled_at?: string
                 }
             },
             profiles: {

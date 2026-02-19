@@ -20,7 +20,7 @@ export const AboutSection: React.FC = () => {
                             <div className="relative aspect-video w-full rounded-lg shadow-2xl overflow-hidden group">
                                 <iframe
                                     className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-                                    src="https://www.youtube.com/embed/7Wt6XlT5Z5w?autoplay=1&mute=1&loop=1&playlist=7Wt6XlT5Z5w&controls=0&showinfo=0&rel=0"
+                                    src="./video/caravan_trip.mp4"
                                     title="Traditional Korean Aesthetic Video"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
@@ -41,17 +41,17 @@ export const AboutSection: React.FC = () => {
                     >
                         <h2 className="text-sm font-bold tracking-widest text-dancheong-green mb-4 uppercase">About Us</h2>
                         <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-8 leading-tight">
-                            전통과 현대가<br />
-                            공존하는 공간
+                            정체성과 감각을 잇는 <br />
+                            CREATIVE PARTNER
                         </h3>
                         <div className="space-y-6 text-lg text-white/70 font-light leading-relaxed">
                             <p>
-                                문화백화점은 한국의 아름다운 전통 문화와 현대적인 라이프스타일을 잇는 가교입니다.
+                                CHWIHYANG-GWAN은 저마다의 고유한 시선과 그 섬세한 결을 존중하며, 감각적인 라이프스타일을 잇는 가교입니다.
                                 우리는 단순히 상품을 판매하는 것을 넘어, 문화를 경험하고 향유하는 새로운 방식을 제안합니다.
                             </p>
                             <p>
-                                장인의 손길이 닿은 공예품부터, 지금 가장 핫한 전시와 공연까지.
-                                당신의 일상에 특별한 영감을 불어넣을 이야기를 만나보세요.
+                                당신의 숨결을 트여줄 클래스 부터, 고유한 전시와 공연까지.
+                                당신만의 정체성이 온전히 담긴 당신의 감각을 CHWIHYANG-GWAN과 함께 완성해보세요.
                             </p>
                         </div>
 

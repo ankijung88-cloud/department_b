@@ -9,12 +9,18 @@ export interface LocalizedString {
 export interface NavItem {
     id: string; // Translation key
     href: string;
+    subitems?: {
+        id: string;
+        label: string;
+        href: string;
+    }[];
 }
 
 export interface FeaturedItem {
     id: string;
     title: LocalizedString;
     category: string;
+    subcategory?: string;
     description: LocalizedString;
     imageUrl: string;
     date: LocalizedString;
@@ -22,6 +28,7 @@ export interface FeaturedItem {
     price: LocalizedString;
     closedDays?: string[];
     videoUrl?: string;
+    user_id?: string;
 }
 
 export interface FloorContent {

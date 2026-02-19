@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AutoTranslatedText } from '../common/AutoTranslatedText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -129,10 +130,10 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                                                 {item.category}
                                                             </span>
                                                             <h3 className="text-white font-serif text-lg leading-tight mb-2 truncate group-hover:text-dancheong-red transition-colors">
-                                                                {getLocalizedText(item.title, i18n.language)}
+                                                                <AutoTranslatedText text={getLocalizedText(item.title, i18n.language)} />
                                                             </h3>
                                                             <p className="text-white/60 text-sm line-clamp-2">
-                                                                {getLocalizedText(item.description, i18n.language)}
+                                                                <AutoTranslatedText text={getLocalizedText(item.description, i18n.language)} />
                                                             </p>
                                                         </div>
                                                         <div className="flex items-center justify-center text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all">

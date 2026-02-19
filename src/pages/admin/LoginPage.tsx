@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabaseClient';
+import api from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 import { motion } from 'framer-motion';
 
 const LoginPage: React.FC = () => {
@@ -9,30 +10,31 @@ const LoginPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { signIn } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const response = await api.post('/api/auth/login', {
                 email,
                 password,
             });
 
-            if (error) {
-                // Check for specific error types if needed, but error.message is usually descriptive
-                let customMessage = error.message;
-                if (error.message === 'Invalid login credentials') {
-                    customMessage = '이메일 또는 비밀번호가 올바르지 않습니다.';
-                } else if (error.message === 'Email not confirmed') {
-                    customMessage = '이메일 인증이 완료되지 않았습니다. 이메일을 확인해 주세요.';
-                }
-                throw new Error(customMessage);
-            }
+            const { token, user } = response.data;
 
-            // Success, navigate to dashboard
-            navigate('/admin/products');
+            // Check admin role (simplified check for transition)
+            // In a better implementation, the backend would return the user's role
+            if (user.email.includes('admin') || email.includes('admin')) {
+                signIn(token, user);
+                navigate('/admin/products');
+            } else {
+                throw new Error('관리자 권한이 없습니다.');
+            }
         } catch (err: any) {
-            setError(err.message);
+            const message = err.response?.data?.message || err.message;
+            setError(message === 'Invalid credentials' ? '이메일 또는 비밀번호가 올바르지 않습니다.' : message);
         } finally {
             setLoading(false);
         }

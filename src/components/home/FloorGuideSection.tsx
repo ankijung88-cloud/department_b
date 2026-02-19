@@ -1,4 +1,5 @@
 import React from 'react';
+import { AutoTranslatedText } from '../common/AutoTranslatedText';
 import { motion } from 'framer-motion';
 import { FLOOR_CATEGORIES } from '../../data/mockData';
 import { ArrowUpRight } from 'lucide-react';
@@ -53,10 +54,10 @@ export const FloorGuideSection: React.FC = () => {
 
                                     <div>
                                         <h4 className="text-2xl font-bold text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                            {getLocalizedText(floor.title, i18n.language)}
+                                            <AutoTranslatedText text={getLocalizedText(floor.title, i18n.language)} />
                                         </h4>
                                         <p className="text-white/80 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">
-                                            {getLocalizedText(floor.description, i18n.language)}
+                                            <AutoTranslatedText text={getLocalizedText(floor.description, i18n.language)} />
                                         </p>
                                     </div>
                                 </div>

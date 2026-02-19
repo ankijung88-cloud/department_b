@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { AutoTranslatedText } from '../common/AutoTranslatedText';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight } from 'lucide-react';
 import { FLOOR_CATEGORIES } from '../../data/mockData';
@@ -85,10 +86,10 @@ export const FloorGuideModal: React.FC<FloorGuideModalProps> = ({ isOpen, onClos
                                         {/* Floor Details */}
                                         <div className="flex-grow">
                                             <h3 className="text-lg font-bold text-white mb-1 group-hover:text-dancheong-red transition-colors">
-                                                {getLocalizedText(floor.title, i18n.language)}
+                                                <AutoTranslatedText text={getLocalizedText(floor.title, i18n.language)} />
                                             </h3>
                                             <p className="text-sm text-white/50 line-clamp-1 group-hover:text-white/70 transition-colors">
-                                                {getLocalizedText(floor.description, i18n.language)}
+                                                <AutoTranslatedText text={getLocalizedText(floor.description, i18n.language)} />
                                             </p>
                                         </div>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { AutoTranslatedText } from '../components/common/AutoTranslatedText';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar as CalendarIcon, MapPin, Share2, X, CheckCircle2, CreditCard, Wallet, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar as CalendarIcon, MapPin, Share2, X, CheckCircle2, CreditCard, Wallet, Loader2, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../utils/i18nUtils';
@@ -9,6 +10,7 @@ import { createBooking } from '../api/bookings';
 import { FeaturedItem } from '../types';
 import { useAuth } from '../context/AuthContext';
 import LoginModal from '../components/auth/LoginModal';
+import { RequestPayResponse, RequestPayParams } from '../types/portone';
 
 // Helper for date formatting
 const formatDate = (date: Date): string => {
@@ -17,6 +19,8 @@ const formatDate = (date: Date): string => {
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
 };
+
+
 
 export const DetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,8 +33,19 @@ export const DetailPage: React.FC = () => {
     const [showShareModal, setShowShareModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'bank_transfer' | 'on_site' | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<'card' | 'trans' | 'bank_transfer' | 'on_site' | null>(null);
     const [bookingStep, setBookingStep] = useState<'select' | 'confirm'>('select');
+    const [activeMedia, setActiveMedia] = useState<'video' | 'image'>('image');
+    const [downloading, setDownloading] = useState(false);
+
+    // Update active media when item changes
+    useEffect(() => {
+        if (item?.videoUrl) {
+            setActiveMedia('video');
+        } else {
+            setActiveMedia('image');
+        }
+    }, [item]);
 
     // Calendar State
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -65,7 +80,7 @@ export const DetailPage: React.FC = () => {
     const handleShareSNS = (platform: 'facebook' | 'twitter' | 'more') => {
         if (!item) return;
         const url = window.location.href;
-        const title = getLocalizedText(item.title, i18n.language);
+        const title = getLocalizedText(item.title, i18n.language); // Note: Simple string for sharing, not component if possible, or handle it differently. AutoTranslate hook returns value, but here we need string immediately. Sharing might use original fallback.
 
         switch (platform) {
             case 'facebook':
@@ -94,12 +109,104 @@ export const DetailPage: React.FC = () => {
         }
     };
 
+    const requestPayment = (method: string, amount: number, name: string) => {
+        if (!window.IMP) {
+            alert("PortOne SDK is not loaded.");
+            return;
+        }
+        const { IMP } = window;
+        IMP.init('imp00000000'); // Test Store ID
+
+        const data: RequestPayParams = {
+            pg: 'html5_inicis',
+            pay_method: method,
+            merchant_uid: `mid_${new Date().getTime()}`,
+            name: name,
+            amount: amount,
+            buyer_email: user?.email || 'test@test.com',
+            buyer_name: user?.user_metadata?.full_name || 'Guest',
+            buyer_tel: '010-0000-0000',
+        };
+
+        IMP.request_pay(data, async (rsp: RequestPayResponse) => {
+            if (rsp.success) {
+                // Payment Success
+                await processBookingAfterPayment(method);
+            } else {
+                // Payment Failed
+                alert(`Payment failed: ${rsp.error_msg}`);
+                setIsBooking(false);
+            }
+        });
+    };
+
+    const handleBankTransfer = async () => {
+        if (!item || !id) return;
+        setIsBooking(true);
+        try {
+            await processBookingAfterPayment('bank_transfer');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsBooking(false);
+        }
+    };
+
+    const processBookingAfterPayment = async (method: string) => {
+        if (!item || !id) return;
+
+        try {
+            const isDownloadable = activeMedia === 'video' || item.category === 'Style' || item.subcategory === 'Style';
+
+            // Define initial status based on payment method and product category
+            let initialStatus = 'pending'; // Default: Awaiting Approval (for non-Style)
+
+            if (isDownloadable) {
+                if (method === 'card' || method === 'trans') {
+                    initialStatus = 'confirmed'; // Card/Realtime for Download: Immediate Approval
+                } else if (method === 'bank_transfer') {
+                    initialStatus = 'pending_payment'; // Bank for Download: Verifying Payment
+                }
+            } else {
+                // For non-downloadable (Performance etc.)
+                if (method === 'bank_transfer') {
+                    initialStatus = 'pending_payment'; // Still verifying payment first
+                } else {
+                    initialStatus = 'pending'; // Card paid, but awaiting admin/owner approval for booking
+                }
+            }
+
+            await createBooking({
+                product_id: id,
+                product_name: getLocalizedText(item.title, i18n.language),
+                user_email: user?.email,
+                payment_method: method,
+                total_price: item.price as any,
+                status: initialStatus
+            });
+
+            if (isDownloadable && initialStatus === 'confirmed') {
+                // Immediate download for confirmed card payments
+                setShowBookingModal(false);
+                proceedToDownload();
+            } else {
+                setBookingStep('confirm');
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Booking failed after payment. Please contact support.');
+        } finally {
+            setIsBooking(false);
+        }
+    };
+
     const handleBooking = () => {
         if (!user) {
             setShowLoginModal(true);
             return;
         }
-        if (!selectedDate) {
+        if (item?.category !== 'Style' && !selectedDate) {
             alert(t('common.select_date', 'Please select a date first.'));
             return;
         }
@@ -109,24 +216,69 @@ export const DetailPage: React.FC = () => {
     };
 
     const confirmBooking = async () => {
-        if (!paymentMethod || !item || !id || !selectedDate) return;
+        if (!paymentMethod || !item || !id) return;
+        if (item.category !== 'Style' && !selectedDate) return;
 
         setIsBooking(true);
-        try {
-            await createBooking({
-                product_id: id,
-                product_name: getLocalizedText(item.title, i18n.language),
-                user_email: user?.email,
-                payment_method: paymentMethod,
-                total_price: item.price as any, // In a real app, parse this
-                // booking_date: selectedDate // If backend supports it
-            });
-            setBookingStep('confirm');
-        } catch (error) {
-            alert('예매 처리 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        } finally {
-            setIsBooking(false);
+
+        // Parse price
+        let amount = 0;
+        const priceText = getLocalizedText(item.price, 'ko'); // Use KRW for payment
+        if (typeof priceText === 'string') {
+            amount = parseInt(priceText.replace(/[^0-9]/g, ''), 10);
+        } else if (typeof priceText === 'number') {
+            amount = priceText;
         }
+
+        if (isNaN(amount) || amount === 0) {
+            // Free or invalid price, direct booking
+            await processBookingAfterPayment(paymentMethod);
+            return;
+        }
+
+        if (paymentMethod === 'bank_transfer') {
+            await handleBankTransfer();
+            return;
+        }
+
+        requestPayment(paymentMethod, amount, getLocalizedText(item.title, i18n.language));
+    };
+
+    const proceedToDownload = async () => {
+        if (!item) return;
+        const url = activeMedia === 'video' ? (item.videoUrl || item.imageUrl) : item.imageUrl;
+        if (!url) return;
+
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            window.open(url, '_blank');
+            return;
+        }
+
+        try {
+            setDownloading(true);
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            const urlParts = url.split('/');
+            const filename = urlParts[urlParts.length - 1].split('?')[0] || `download-${item.id}`;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download failed:', error);
+            window.open(url, '_blank');
+        } finally {
+            setDownloading(false);
+        }
+    };
+
+    const handleDownload = () => {
+        // Trigger payment flow for download
+        handleBooking();
     };
 
     // Calendar Helper Functions
@@ -202,55 +354,55 @@ export const DetailPage: React.FC = () => {
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
 
             {/* Header / Hero */}
-            <div className="relative h-[60vh] w-full">
-                {item.videoUrl ? (
-                    <div className="absolute inset-0 bg-black">
-                        <iframe
-                            className="w-full h-full object-cover opacity-60"
-                            src={`https://www.youtube.com/embed/${item.videoUrl.split('v=')[1]?.split('&')[0]}?autoplay=1&mute=1&loop=1&playlist=${item.videoUrl.split('v=')[1]?.split('&')[0]}&controls=0&showinfo=0&rel=0`}
-                            title="YouTube video player"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                        <div className="absolute inset-0 bg-black/40" />
-                    </div>
-                ) : (
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url(${item.imageUrl})` }}
-                    >
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-                    </div>
-                )}
-
-                <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-end pb-12">
-                    <Link to="/" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors">
-                        <ArrowLeft size={20} className="mr-2" />
-                        {t('common.back')}
-                    </Link>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        <div className="inline-block border-b-2 border-dancheong-red mb-4 pb-1">
-                            <span className="text-xl font-serif font-bold tracking-wider">
-                                {item.category}
-                            </span>
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">{getLocalizedText(item.title, i18n.language)}</h1>
-                        <div className="flex flex-wrap gap-6 text-white/80 text-sm">
-                            <div className="flex items-center">
-                                <CalendarIcon size={16} className="mr-2 text-dancheong-green" />
-                                {getLocalizedText(item.date, i18n.language)}
-                            </div>
-                            <div className="flex items-center">
-                                <MapPin size={16} className="mr-2 text-dancheong-green" />
-                                {getLocalizedText(item.location, i18n.language)}
-                            </div>
-                        </div>
-                    </motion.div>
+            <div className="relative h-[60vh] w-full group">
+                {/* Main Media Display - Image Only */}
+                <div
+                    className="absolute inset-0 bg-cover bg-center transition-all duration-500"
+                    style={{ backgroundImage: `url(${item.imageUrl})` }}
+                >
+                    <div className="absolute inset-0 bg-black/40" />
                 </div>
+
+
+
+                {/* Content Overlay */}
+                <div className="absolute inset-x-0 top-0 bottom-16 z-20 pointer-events-none">
+                    <div className="container mx-auto px-6 h-full flex flex-col justify-end">
+                        <Link to="/" className="inline-flex items-center text-white/60 hover:text-white mb-6 transition-colors pointer-events-auto">
+                            <ArrowLeft size={20} className="mr-2" />
+                            {t('common.back')}
+                        </Link>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="pointer-events-auto"
+                        >
+                            <div className="inline-block border-b-2 border-dancheong-red mb-4 pb-1">
+                                <span className="text-xl font-serif font-bold tracking-wider">
+                                    {(() => {
+                                        const displayKey = item.subcategory || item.category;
+                                        return t(`nav.${displayKey.toLowerCase()}`) || displayKey;
+                                    })()}
+                                </span>
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4"><AutoTranslatedText text={getLocalizedText(item.title, i18n.language)} /></h1>
+
+                            <div className="flex flex-wrap gap-6 text-white/80 text-sm">
+                                <div className="flex items-center">
+                                    <CalendarIcon size={16} className="mr-2 text-dancheong-green" />
+                                    <AutoTranslatedText text={getLocalizedText(item.date, i18n.language)} />
+                                </div>
+                                <div className="flex items-center">
+                                    <MapPin size={16} className="mr-2 text-dancheong-green" />
+                                    <AutoTranslatedText text={getLocalizedText(item.location, i18n.language)} />
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+
+                <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-transparent h-[40%] mt-auto" />
             </div>
 
             {/* Content Body */}
@@ -259,7 +411,7 @@ export const DetailPage: React.FC = () => {
                     <section>
                         <h3 className="text-2xl font-bold font-serif mb-6 border-l-4 border-dancheong-green pl-4">{t('common.detail_intro')}</h3>
                         <p className="text-lg leading-relaxed text-white/80 whitespace-pre-line min-h-[500px]">
-                            {getLocalizedText(item.description, i18n.language)}
+                            <AutoTranslatedText text={getLocalizedText(item.description, i18n.language)} />
                         </p>
                     </section>
                 </div>
@@ -271,51 +423,76 @@ export const DetailPage: React.FC = () => {
                         <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-white/60">{t('common.price')}</span>
-                                <span className="text-xl font-bold text-dancheong-red">{getLocalizedText(item.price, i18n.language)}</span>
+                                <span className="text-xl font-bold text-dancheong-red">
+                                    {(() => {
+                                        const priceText = getLocalizedText(item.price, i18n.language);
+                                        const displayPrice = /^[0-9,]+$/.test(priceText) ? `${priceText}원` : priceText;
+                                        return <AutoTranslatedText text={displayPrice} />;
+                                    })()}
+                                </span>
                             </div>
                         </div>
 
-                        {/* Calendar */}
-                        <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
-                            <h4 className="text-lg font-bold mb-4 flex items-center">
-                                <CalendarIcon size={18} className="mr-2 text-dancheong-green" />
-                                {t('common.select_date', 'Select Date')}
-                            </h4>
+                        {/* Calendar - Hide for Style category */}
+                        {item.category !== 'Style' && (
+                            <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
+                                <h4 className="text-lg font-bold mb-4 flex items-center">
+                                    <CalendarIcon size={18} className="mr-2 text-dancheong-green" />
+                                    {t('common.select_date', 'Select Date')}
+                                </h4>
 
-                            <div className="flex justify-between items-center mb-4">
-                                <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronLeft size={20} /></button>
-                                <span className="font-bold">{currentDate.getFullYear()}. {currentDate.getMonth() + 1}</span>
-                                <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronRight size={20} /></button>
-                            </div>
-
-                            <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-white/40 font-bold uppercase">
-                                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                            </div>
-                            <div className="grid grid-cols-7 gap-2 place-items-center">
-                                {renderCalendar()}
-                            </div>
-
-                            {selectedDate && (
-                                <div className="mt-4 p-3 bg-dancheong-red/10 border border-dancheong-red/20 rounded-lg text-center">
-                                    <span className="text-sm text-dancheong-red font-bold">
-                                        Selected: {selectedDate}
-                                    </span>
+                                <div className="flex justify-between items-center mb-4">
+                                    <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronLeft size={20} /></button>
+                                    <span className="font-bold">{currentDate.getFullYear()}. {currentDate.getMonth() + 1}</span>
+                                    <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronRight size={20} /></button>
                                 </div>
-                            )}
-                        </div>
+
+                                <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-white/40 font-bold uppercase">
+                                    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                                </div>
+                                <div className="grid grid-cols-7 gap-2 place-items-center">
+                                    {renderCalendar()}
+                                </div>
+
+                                {selectedDate && (
+                                    <div className="mt-4 p-3 bg-dancheong-red/10 border border-dancheong-red/20 rounded-lg text-center">
+                                        <span className="text-sm text-dancheong-red font-bold">
+                                            Selected: {selectedDate}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Action Buttons */}
                         <div className="bg-[#2a2a2a] p-6 rounded-xl border border-white/5 shadow-2xl">
-                            <button
-                                onClick={handleBooking}
-                                disabled={!selectedDate}
-                                className={`w-full py-4 rounded-lg font-bold text-lg mb-4 transition-all shadow-lg flex items-center justify-center ${selectedDate
-                                    ? 'bg-dancheong-red hover:bg-red-700 text-white'
-                                    : 'bg-white/10 text-white/40 cursor-not-allowed'
-                                    }`}
-                            >
-                                {t('common.booking')}
-                            </button>
+
+
+                            {item.category === 'Style' ? (
+                                <button
+                                    onClick={handleDownload}
+                                    disabled={downloading}
+                                    className="w-full py-4 rounded-lg font-bold text-lg mb-4 transition-all shadow-lg flex items-center justify-center bg-dancheong-green hover:bg-green-700 text-white"
+                                >
+                                    {downloading ? (
+                                        <Loader2 size={24} className="animate-spin mr-2" />
+                                    ) : (
+                                        <Download size={24} className="mr-2" />
+                                    )}
+                                    {t('common.download')}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleBooking}
+                                    disabled={!selectedDate}
+                                    className={`w-full py-4 rounded-lg font-bold text-lg mb-4 transition-all shadow-lg flex items-center justify-center ${selectedDate
+                                        ? 'bg-dancheong-red hover:bg-red-700 text-white'
+                                        : 'bg-white/10 text-white/40 cursor-not-allowed'
+                                        }`}
+                                >
+                                    {t('common.booking')}
+                                </button>
+                            )}
 
                             <button
                                 onClick={handleShare}
@@ -479,26 +656,51 @@ export const DetailPage: React.FC = () => {
                                     </div>
 
                                     <div className="space-y-4 mb-8">
+                                        {/* Credit Card - Available for All */}
                                         <button
-                                            onClick={() => setPaymentMethod('bank_transfer')}
-                                            className={`w-full p-4 rounded-xl border transition-all flex items-center ${paymentMethod === 'bank_transfer'
+                                            onClick={() => setPaymentMethod('card')}
+                                            className={`w-full p-4 rounded-xl border transition-all flex items-center ${paymentMethod === 'card'
                                                 ? 'bg-dancheong-red/20 border-dancheong-red text-dancheong-red'
                                                 : 'bg-white/5 border-white/10 hover:border-white/20 text-white/80'
                                                 }`}
                                         >
-                                            <Wallet className="mr-4" size={24} />
-                                            <span className="font-medium">{t('common.payment.bank_transfer')}</span>
+                                            <CreditCard className="mr-4" size={24} />
+                                            <span className="font-medium">{t('common.payment.credit_card', 'Credit Card')}</span>
                                         </button>
 
+                                        {/* Account Transfer - Only for Style (Photo/Video) */}
+                                        {(item?.category === 'Style' || item?.subcategory === 'Style') && (
+                                            <button
+                                                onClick={() => setPaymentMethod('trans')}
+                                                className={`w-full p-4 rounded-xl border transition-all flex items-center ${paymentMethod === 'trans'
+                                                    ? 'bg-dancheong-green/20 border-dancheong-green text-dancheong-green'
+                                                    : 'bg-white/5 border-white/10 hover:border-white/20 text-white/80'
+                                                    }`}
+                                            >
+                                                <Wallet className="mr-4" size={24} />
+                                                <span className="font-medium">{t('common.payment.realtime_transfer', 'Real-time Account Transfer')}</span>
+                                            </button>
+                                        )}
+
+                                        {/* Bank Transfer (Manual) - New Requirement */}
                                         <button
-                                            onClick={() => setPaymentMethod('on_site')}
-                                            className={`w-full p-4 rounded-xl border transition-all flex items-center ${paymentMethod === 'on_site'
+                                            onClick={() => setPaymentMethod('bank_transfer')}
+                                            className={`w-full p-4 rounded-xl border transition-all flex items-center ${paymentMethod === 'bank_transfer'
                                                 ? 'bg-dancheong-green/20 border-dancheong-green text-dancheong-green'
                                                 : 'bg-white/5 border-white/10 hover:border-white/20 text-white/80'
                                                 }`}
                                         >
-                                            <CreditCard className="mr-4" size={24} />
-                                            <span className="font-medium">{t('common.payment.on_site')}</span>
+                                            <Wallet className="mr-4" size={24} />
+                                            <div className="text-left">
+                                                <span className="font-medium block">{t('common.payment.bank_transfer')}</span>
+                                                {paymentMethod === 'bank_transfer' && (
+                                                    <div className="mt-2 text-xs opacity-80 leading-tight">
+                                                        <p>{t('common.payment.bank_name')}: 국민은행</p>
+                                                        <p>{t('common.payment.account_number')}: 123-45678-90</p>
+                                                        <p>{t('common.payment.account_holder')}: CHWIHYANG-GWAN</p>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </button>
                                     </div>
 
@@ -531,16 +733,12 @@ export const DetailPage: React.FC = () => {
                                         <div>
                                             <p className="text-xs text-white/40 mb-1">{t('common.payment.method')}</p>
                                             <p className="font-medium">
-                                                {paymentMethod === 'bank_transfer' ? t('common.payment.bank_transfer') : t('common.payment.on_site')}
+                                                {paymentMethod === 'card' ? 'Credit Card' :
+                                                    paymentMethod === 'trans' ? 'Account Transfer' :
+                                                        paymentMethod}
                                             </p>
                                         </div>
-                                        {paymentMethod === 'bank_transfer' && (
-                                            <div className="pt-4 border-t border-white/10">
-                                                <p className="text-sm text-dancheong-red leading-relaxed">
-                                                    {t('common.payment.bank_info')}
-                                                </p>
-                                            </div>
-                                        )}
+                                        {/* Bank info removed as we use PG now */}
                                     </div>
 
                                     <button

@@ -8,5 +8,13 @@ console.log('Supabase: Initializing client with URL:', supabaseUrl ? 'Defined' :
 
 export const supabase = createClient<Database>(
     supabaseUrl || '',
-    supabaseAnonKey || ''
+    supabaseAnonKey || '',
+    {
+        auth: {
+            storage: localStorage,
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        }
+    }
 );
