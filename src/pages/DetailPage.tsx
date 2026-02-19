@@ -124,7 +124,7 @@ export const DetailPage: React.FC = () => {
             name: name,
             amount: amount,
             buyer_email: user?.email || 'test@test.com',
-            buyer_name: user?.user_metadata?.full_name || 'Guest',
+            buyer_name: user?.name || 'Guest',
             buyer_tel: '010-0000-0000',
         };
 
