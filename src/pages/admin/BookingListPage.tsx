@@ -228,16 +228,16 @@ const BookingListPage: React.FC = () => {
             {/* Table */}
             <div className="bg-[#2a2a2a] rounded-xl border border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-white/5 border-b border-white/5 text-white/60 text-sm">
-                                <th className="p-4 font-medium w-[15%]">{t('admin.booking.table.date')}</th>
-                                <th className="p-4 font-medium w-[15%]">{t('admin.user.table.user')}</th>
-                                <th className="p-4 font-medium">{t('admin.booking.table.product')}</th>
-                                <th className="p-4 font-medium text-right w-[12%]">{t('admin.booking.table.amount')}</th>
-                                <th className="p-4 font-medium text-right w-[12%]">{t('admin.booking.table.settlement')}</th>
-                                <th className="p-4 font-medium w-[12%]">{t('admin.booking.table.status')}</th>
-                                <th className="p-4 font-medium text-center w-[10%]">{t('admin.booking.table.actions')}</th>
+                                <th className="p-4 font-medium text-center w-[12%]">{t('admin.booking.table.date')}</th>
+                                <th className="p-4 font-medium text-center w-[15%]">{t('admin.user.table.user')}</th>
+                                <th className="p-4 font-medium text-center w-[25%]">{t('admin.booking.table.product')}</th>
+                                <th className="p-4 font-medium text-center w-[12%]">{t('admin.booking.table.amount')}</th>
+                                <th className="p-4 font-medium text-center w-[12%]">{t('admin.booking.table.settlement')}</th>
+                                <th className="p-4 font-medium text-center w-[12%]">{t('admin.booking.table.status')}</th>
+                                <th className="p-4 font-medium text-center w-[12%]">{t('admin.booking.table.actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -262,10 +262,10 @@ const BookingListPage: React.FC = () => {
                                     const settlementAmount = amount * 0.9;
                                     return (
                                         <tr key={booking.id} className="hover:bg-white/5 transition-colors">
-                                            <td className="p-4 text-sm text-white/60">
+                                            <td className="p-4 text-sm text-white/60 text-center">
                                                 {formatDate(booking.created_at)}
                                             </td>
-                                            <td className="p-4 text-sm font-medium">
+                                            <td className="p-4 text-sm font-medium text-center truncate">
                                                 {booking.user_email || t('common.guest')}
                                             </td>
                                             <td className="p-4">
@@ -289,7 +289,7 @@ const BookingListPage: React.FC = () => {
                                                 {settlementAmount.toLocaleString()}원
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex flex-col gap-1">
+                                                <div className="flex flex-col gap-1 items-center">
                                                     {getStatusBadge(booking.status)}
                                                     {getSettlementBadge(booking.settlement_status)}
                                                 </div>
