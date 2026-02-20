@@ -20,7 +20,9 @@ async function findMissingImages() {
         let output = '--- PRODUCTS WITHOUT IMAGES ---\n';
         rows.forEach(r => {
             const details = typeof r.details === 'string' ? JSON.parse(r.details) : r.details;
-            output += `ID: ${r.id} | Name: ${r.name} | Category: ${r.category_id} | Subcategory: ${details?.subcategory || 'N/A'}\n`;
+            const msg = `ID: ${r.id} | Name: ${r.name} | Category: ${r.category_id} | Subcategory: ${details?.subcategory || 'N/A'}`;
+            console.log(msg);
+            output += msg + '\n';
         });
         output += '-------------------------\n';
         fs.writeFileSync('missing_images_report.txt', output);
