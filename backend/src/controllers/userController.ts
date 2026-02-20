@@ -5,7 +5,7 @@ import { RowDataPacket, ResultSetHeader } from 'mysql2';
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const [rows] = await pool.query<RowDataPacket[]>(
-            'SELECT id, full_name, email, role, created_at, avatar_url FROM users ORDER BY role ASC, full_name ASC'
+            'SELECT id, name AS full_name, email, UPPER(role) AS role, created_at, NULL AS avatar_url FROM users ORDER BY role ASC, name ASC'
         );
         res.json(rows);
     } catch (error) {
