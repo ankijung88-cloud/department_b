@@ -308,7 +308,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
             ja: '月明かりの下、古宮を歩く特別な体験。専門解説士と共にするプライベート夜間ツアーです。',
             zh: '月光下漫步古宫的特别体验。与专业讲解员一起进行的私人夜间游览。'
         },
-        imageUrl: 'https://images.unsplash.com/photo-1590635327202-b53050a49826?q=80&w=2560&auto=format&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1571932371459-a78b40813959?q=80&w=2560&auto=format&fit=crop',
         date: { ko: '2023.10.01 - 2023.10.31', en: 'Oct 01 - Oct 31, 2023', ja: '2023.10.01 - 2023.10.31', zh: '2023.10.01 - 2023.10.31' },
         location: { ko: '서울 종로구 사직로 161', en: '161 Sajik-ro, Jongno-gu, Seoul', ja: 'ソウル鍾路区社稷路161', zh: '首尔钟路区社稷路161' },
         price: { ko: '30,000원', en: '30,000 KRW', ja: '30,000ウォン', zh: '30,000韩元' }
@@ -358,7 +358,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
             ja: '伝統パンソリにメディアアートを融合させたフュージョン国楽公演。春香伝を新しい視点で解き明かします。',
             zh: '结合传统板索里和媒体艺术的融合国乐演出。以新的视角诠释春香传。'
         },
-        imageUrl: 'https://images.unsplash.com/photo-1514533248912-c96053de8a94?q=80&w=2560&auto=format&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1543157145-c33589b25121?q=80&w=2560&auto=format&fit=crop',
         date: { ko: '2023.10.15 - 2023.10.20', en: 'Oct 15 - Oct 20, 2023', ja: '2023.10.15 - 2023.10.20', zh: '2023.10.15 - 2023.10.20' },
         location: { ko: '국립극장 해오름', en: 'National Theater of Korea', ja: '国立劇場ヘオルム', zh: '国立剧场' },
         price: { ko: '50,000원', en: '50,000 KRW', ja: '50,000ウォン', zh: '50,000韩元' }
@@ -391,7 +391,7 @@ export const FEATURED_ITEMS: FeaturedItem[] = [
             ja: '朝鮮白磁の精髄、月壺30点余りを一堂に会する展示。',
             zh: '在一处欣赏朝鲜白瓷的精髓——30多件月亮罐的展览。'
         },
-        imageUrl: 'https://images.unsplash.com/photo-1579402507856-3bb912df0f63?q=80&w=2560&auto=format&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?q=80&w=2560&auto=format&fit=crop',
         date: { ko: '2023.09.01 - 2023.12.31', en: 'Sep 01 - Dec 31, 2023', ja: '2023.09.01 - 2023.12.31', zh: '2023.09.01 - 2023.12.31' },
         location: { ko: '리움 미술관', en: 'Leeum Museum of Art', ja: 'リウム美術館', zh: 'Leeum美术馆' },
         price: { ko: '15,000원', en: '15,000 KRW', ja: '15,000ウォン', zh: '15,000韩元' }
