@@ -80,8 +80,8 @@ const ProductListPage: React.FC = () => {
         'guide': '가이드',
         // New Floor Mappings
         'Trend': '트렌드 / 팝업 (1F)',
-        'Performance': '공연 (2F)',
-        'Exhibition': '전시 (2F)',
+        'Performance': '공연 / 전시 (2F)',
+        'Exhibition': '공연 / 전시 (2F)',
         'Art': '활동 / 스타일 (3F)',
         'Style': '사진 / 영상 (4F)',
         'Travel': '로컬 / 여행 (5F)',

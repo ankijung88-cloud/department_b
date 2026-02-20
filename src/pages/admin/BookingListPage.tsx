@@ -31,6 +31,16 @@ const BookingListPage: React.FC = () => {
     });
     const { t } = useTranslation();
 
+    const categoryLabels: Record<string, string> = {
+        'Trend': '트렌드 / 팝업 (1F)',
+        'Performance': '공연 / 전시 (2F)',
+        'Exhibition': '공연 / 전시 (2F)',
+        'Art': '활동 / 스타일 (3F)',
+        'Style': '사진 / 영상 (4F)',
+        'Travel': '로컬 / 여행 (5F)',
+        'Community': '커뮤니티'
+    };
+
     const fetchBookings = async () => {
         setLoading(true);
         try {
@@ -264,7 +274,7 @@ const BookingListPage: React.FC = () => {
                                                     <AutoTranslatedText text={typeof booking.products?.title === 'object' ? (booking.products.title as any).ko : booking.product_id} />
                                                 </div>
                                                 <div className="text-xs text-white/40">
-                                                    {booking.products?.category || 'Unknown'}
+                                                    {categoryLabels[booking.products?.category] || booking.products?.category || 'Unknown'}
                                                 </div>
                                             </td>
                                             <td className="p-4">

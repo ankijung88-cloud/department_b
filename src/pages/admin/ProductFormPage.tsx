@@ -371,14 +371,24 @@ const ProductFormPage: React.FC = () => {
                             <select
                                 value={category}
                                 onChange={(e) => {
-                                    setCategory(e.target.value);
-                                    setSubcategory(''); // Reset subcategory when main changes
+                                    const nextCategory = e.target.value;
+                                    setCategory(nextCategory);
+
+                                    // Set default subcategory when main changes
+                                    if (nextCategory === 'Trend') setSubcategory('popup');
+                                    else if (nextCategory === 'Performance') setSubcategory('performance');
+                                    else if (nextCategory === 'Exhibition') setSubcategory('exhibition');
+                                    else if (nextCategory === 'Art') setSubcategory('class');
+                                    else if (nextCategory === 'Style') setSubcategory('photo');
+                                    else if (nextCategory === 'Travel') setSubcategory('local');
+                                    else if (nextCategory === 'Community') setSubcategory('notice');
+                                    else setSubcategory('');
                                 }}
                                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
                             >
                                 <option value="Trend" className="bg-[#2a2a2a]">1F - 트렌드 / 팝업</option>
-                                <option value="Performance" className="bg-[#2a2a2a]">2F - 공연</option>
-                                <option value="Exhibition" className="bg-[#2a2a2a]">2F - 전시</option>
+                                <option value="Performance" className="bg-[#2a2a2a]">2F - 공연 / 전시</option>
+                                <option value="Exhibition" className="bg-[#2a2a2a]">2F - 공연 / 전시</option>
                                 <option value="Art" className="bg-[#2a2a2a]">3F - 활동 / 스타일</option>
                                 <option value="Style" className="bg-[#2a2a2a]">4F - 사진 / 영상</option>
                                 <option value="Travel" className="bg-[#2a2a2a]">5F - 로컬 / 여행</option>
@@ -393,7 +403,6 @@ const ProductFormPage: React.FC = () => {
                                 onChange={(e) => setSubcategory(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
                             >
-                                <option value="" className="bg-[#2a2a2a]">{t('common.select') || '선택하세요'}</option>
                                 {category === 'Trend' && (
                                     <>
                                         <option value="popup" className="bg-[#2a2a2a]">팝업스토어</option>
@@ -401,15 +410,11 @@ const ProductFormPage: React.FC = () => {
                                         <option value="new" className="bg-[#2a2a2a]">신상품</option>
                                     </>
                                 )}
-                                {category === 'Performance' && (
+                                {(category === 'Performance' || category === 'Exhibition') && (
                                     <>
                                         <option value="performance" className="bg-[#2a2a2a]">공연</option>
-                                        <option value="booking" className="bg-[#2a2a2a]">예매하기</option>
-                                    </>
-                                )}
-                                {category === 'Exhibition' && (
-                                    <>
                                         <option value="exhibition" className="bg-[#2a2a2a]">전시</option>
+                                        <option value="booking" className="bg-[#2a2a2a]">예매하기</option>
                                     </>
                                 )}
                                 {category === 'Art' && (
