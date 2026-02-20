@@ -15,12 +15,12 @@ import { useNavigate } from 'react-router-dom';
 // Mapping URL paths to Internal Categories (for filtering)
 // Includes legacy keys for backward compatibility
 const CATEGORY_FILTERS: Record<string, string[]> = {
-    'trend': ['Trend', 'trend', 'popup', 'collab', 'new', '트렌드', '팝업'],
-    'tickets': ['Tickets', 'tickets', 'Exhibition', 'Performance', 'performance', 'exhibition', 'booking', '예매하기', '공연', '전시'],
-    'art': ['Art', 'art', 'class', 'fashion', '활동', '예술', '클래스', '스타일'],
-    'style': ['Style', 'style', 'photo', 'video', 'media', '사진', '영상', '미디어'],
-    'travel': ['Travel', 'travel', 'local', 'course', 'guide', '여행', '로컬'],
-    'community': ['Community', 'community', 'notice', 'qna', 'reviews', '커뮤니티', '공지사항', '후기']
+    'trend': ['Trend', 'trend', 'popup', 'collab', 'new', '트렌드', '팝업', '1F', '1층'],
+    'tickets': ['Tickets', 'tickets', 'Exhibition', 'Performance', 'performance', 'exhibition', 'booking', '예매하기', '공연', '전시', '2F', '2층'],
+    'art': ['Art', 'art', 'class', 'fashion', '활동', '예술', '클래스', '스타일', '3F', '3층'],
+    'style': ['Style', 'style', 'photo', 'video', 'media', '사진', '영상', '미디어', '4F', '4층'],
+    'travel': ['Travel', 'travel', 'local', 'course', 'guide', '여행', '로컬', '5F', '5층'],
+    'community': ['Community', 'community', 'notice', 'qna', 'reviews', '커뮤니티', '공지사항', '후기', '6F', '6층']
 };
 
 const CategoryPage: React.FC = () => {
