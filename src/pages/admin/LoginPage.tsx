@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
                 signIn(token, user);
                 navigate('/admin/products');
             } else {
-                throw new Error('관리자 권한이 없습니다.');
+                throw new Error(`관리자 권한이 없습니다. (현재 권한: ${user.role || '없음'})`);
             }
         } catch (err: any) {
             const message = err.response?.data?.message || err.message;
