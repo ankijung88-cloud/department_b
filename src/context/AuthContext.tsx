@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         profile,
         loading,
-        isAdmin: profile?.role === 'ADMIN',
+        isAdmin: profile?.role?.toUpperCase() === 'ADMIN',
         signOut,
         signIn,
     };

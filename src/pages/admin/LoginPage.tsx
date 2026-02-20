@@ -24,9 +24,8 @@ const LoginPage: React.FC = () => {
 
             const { token, user } = response.data;
 
-            // Check admin role (simplified check for transition)
-            // In a better implementation, the backend would return the user's role
-            if (user.role === 'ADMIN') {
+            // Check admin role (case-insensitive)
+            if (user.role?.toUpperCase() === 'ADMIN') {
                 signIn(token, user);
                 navigate('/admin/products');
             } else {
