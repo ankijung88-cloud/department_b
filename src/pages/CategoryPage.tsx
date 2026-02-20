@@ -73,11 +73,19 @@ const CategoryPage: React.FC = () => {
                     const results = await Promise.all(promises);
                     let allItems = results.flat();
 
-                    // Apply Sub-filter if present
+                    // 1. De-duplicate by ID
+                    const uniqueMap = new Map();
+                    allItems.forEach(item => {
+                        if (!uniqueMap.has(item.id)) {
+                            uniqueMap.set(item.id, item);
+                        }
+                    });
+                    allItems = Array.from(uniqueMap.values());
+
+                    // 2. Apply Sub-filter if present
                     if (filter) {
                         allItems = allItems.filter(item =>
-                            (item.subcategory && item.subcategory.toLowerCase() === filter.toLowerCase()) ||
-                            (item.category && item.category.toLowerCase() === filter.toLowerCase())
+                            (item.subcategory && item.subcategory.toLowerCase() === filter.toLowerCase())
                         );
                     }
 
