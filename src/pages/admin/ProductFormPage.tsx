@@ -461,10 +461,29 @@ const ProductFormPage: React.FC = () => {
                         <div className="flex flex-col md:flex-row gap-8">
                             {/* Calendar UI */}
                             <div className="w-full max-w-sm">
-                                <div className="flex justify-between items-center mb-4 bg-white/5 p-2 rounded-lg">
-                                    <button type="button" onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronLeft size={20} /></button>
-                                    <span className="font-bold flex-1 text-center">{currentCalDate.getFullYear()}. {String(currentCalDate.getMonth() + 1).padStart(2, '0')}</span>
-                                    <button type="button" onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full"><ChevronRight size={20} /></button>
+                                <div className="flex justify-between items-center mb-4 bg-white/5 p-2 rounded-lg gap-2">
+                                    <button type="button" onClick={prevMonth} className="p-1 hover:bg-white/10 rounded-full" disabled={currentCalDate.getFullYear() <= 2000}><ChevronLeft size={20} /></button>
+                                    <div className="flex-1 flex justify-center gap-2">
+                                        <select
+                                            value={currentCalDate.getFullYear()}
+                                            onChange={(e) => setCurrentCalDate(new Date(parseInt(e.target.value), currentCalDate.getMonth(), 1))}
+                                            className="bg-transparent border-none font-bold text-sm focus:outline-none cursor-pointer hover:text-dancheong-red"
+                                        >
+                                            {Array.from({ length: 101 }, (_, i) => 2000 + i).map(year => (
+                                                <option key={year} value={year} className="bg-charcoal">{year}</option>
+                                            ))}
+                                        </select>
+                                        <select
+                                            value={currentCalDate.getMonth()}
+                                            onChange={(e) => setCurrentCalDate(new Date(currentCalDate.getFullYear(), parseInt(e.target.value), 1))}
+                                            className="bg-transparent border-none font-bold text-sm focus:outline-none cursor-pointer hover:text-dancheong-red"
+                                        >
+                                            {Array.from({ length: 12 }, (_, i) => i).map(month => (
+                                                <option key={month} value={month} className="bg-charcoal">{month + 1}월</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <button type="button" onClick={nextMonth} className="p-1 hover:bg-white/10 rounded-full" disabled={currentCalDate.getFullYear() >= 2100}><ChevronRight size={20} /></button>
                                 </div>
 
                                 <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-white/40 font-bold uppercase">
