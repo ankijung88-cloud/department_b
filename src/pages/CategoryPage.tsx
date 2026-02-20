@@ -122,7 +122,9 @@ const CategoryPage: React.FC = () => {
                         transition={{ duration: 0.8 }}
                     >
                         <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 tracking-tight">
-                            {floorData ? (
+                            {filter ? (
+                                <AutoTranslatedText text={t(`nav.${filter.toLowerCase()}`) || filter} />
+                            ) : floorData ? (
                                 <AutoTranslatedText text={getLocalizedText(floorData.title, i18n.language)} />
                             ) : (
                                 categoryId

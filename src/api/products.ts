@@ -15,6 +15,7 @@ export const transformProduct = (row: any): FeaturedItem => {
         date: (details?.date || { ko: '' }) as LocalizedString,
         location: (details?.location || { ko: '' }) as LocalizedString,
         price: (details?.price || { ko: row.price.toString() }) as LocalizedString,
+        subcategory: details?.subcategory,
         closedDays: details?.closed_days || [],
         videoUrl: row.video_url || details?.video_url,
         user_id: row.user_id || undefined,
