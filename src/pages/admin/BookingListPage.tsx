@@ -234,7 +234,6 @@ const BookingListPage: React.FC = () => {
                                 <th className="p-4 font-medium">{t('admin.booking.table.date')}</th>
                                 <th className="p-4 font-medium">{t('admin.user.table.user')}</th>
                                 <th className="p-4 font-medium">{t('admin.booking.table.product')}</th>
-                                <th className="p-4 font-medium">{t('admin.booking.table.payment')}</th>
                                 <th className="p-4 font-medium text-right">{t('admin.booking.table.amount')}</th>
                                 <th className="p-4 font-medium text-right">{t('admin.booking.table.settlement')}</th>
                                 <th className="p-4 font-medium">{t('admin.booking.table.status')}</th>
@@ -244,11 +243,11 @@ const BookingListPage: React.FC = () => {
                         <tbody className="divide-y divide-white/5">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={8} className="p-8 text-center text-white/40">{t('common.loading')}</td>
+                                    <td colSpan={7} className="p-8 text-center text-white/40">{t('common.loading')}</td>
                                 </tr>
                             ) : bookings.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="p-8 text-center text-white/40">{t('search.no_results')}</td>
+                                    <td colSpan={7} className="p-8 text-center text-white/40">{t('search.no_results')}</td>
                                 </tr>
                             ) : (
                                 bookings.map((booking: Booking) => {
@@ -277,16 +276,14 @@ const BookingListPage: React.FC = () => {
                                                     {categoryLabels[booking.products?.category] || booking.products?.category || 'Unknown'}
                                                 </div>
                                             </td>
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-2">
-                                                    {getPaymentIcon(booking.payment_method)}
-                                                    <span className="text-sm">
-                                                        {t(`common.payment.${booking.payment_method}`) || booking.payment_method}
-                                                    </span>
-                                                </div>
-                                            </td>
                                             <td className="p-4 font-bold text-dancheong-red text-right">
-                                                {amount.toLocaleString()}원
+                                                <div className="flex flex-col items-end">
+                                                    <span>{amount.toLocaleString()}원</span>
+                                                    <div className="flex items-center gap-1 text-[10px] text-white/40 font-normal">
+                                                        {getPaymentIcon(booking.payment_method)}
+                                                        {t(`common.payment.${booking.payment_method}`) || booking.payment_method}
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="p-4 font-bold text-dancheong-green text-right">
                                                 {settlementAmount.toLocaleString()}원
