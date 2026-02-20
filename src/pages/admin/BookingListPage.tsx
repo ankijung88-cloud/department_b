@@ -231,13 +231,13 @@ const BookingListPage: React.FC = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white/5 border-b border-white/5 text-white/60 text-sm">
-                                <th className="p-4 font-medium">{t('admin.booking.table.date')}</th>
-                                <th className="p-4 font-medium">{t('admin.user.table.user')}</th>
+                                <th className="p-4 font-medium w-[15%]">{t('admin.booking.table.date')}</th>
+                                <th className="p-4 font-medium w-[15%]">{t('admin.user.table.user')}</th>
                                 <th className="p-4 font-medium">{t('admin.booking.table.product')}</th>
-                                <th className="p-4 font-medium text-right">{t('admin.booking.table.amount')}</th>
-                                <th className="p-4 font-medium text-right">{t('admin.booking.table.settlement')}</th>
-                                <th className="p-4 font-medium">{t('admin.booking.table.status')}</th>
-                                <th className="p-4 font-medium">{t('admin.booking.table.actions')}</th>
+                                <th className="p-4 font-medium text-right w-[12%]">{t('admin.booking.table.amount')}</th>
+                                <th className="p-4 font-medium text-right w-[12%]">{t('admin.booking.table.settlement')}</th>
+                                <th className="p-4 font-medium w-[12%]">{t('admin.booking.table.status')}</th>
+                                <th className="p-4 font-medium text-center w-[10%]">{t('admin.booking.table.actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -294,20 +294,20 @@ const BookingListPage: React.FC = () => {
                                                     {getSettlementBadge(booking.settlement_status)}
                                                 </div>
                                             </td>
-                                            <td className="p-4">
-                                                <div className="flex flex-col gap-2">
+                                            <td className="p-4 text-center">
+                                                <div className="flex flex-col items-center gap-2">
                                                     {(booking.status === 'pending' || booking.status === 'pending_payment') && (
                                                         <div className="flex gap-2">
                                                             <button
                                                                 onClick={() => handleStatusUpdate(booking.id, 'confirmed')}
-                                                                className="flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded text-[10px] font-bold uppercase"
+                                                                className="flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30 rounded text-[10px] font-bold uppercase transition-colors"
                                                                 title="Approve"
                                                             >
                                                                 <CheckCircle size={12} /> OK
                                                             </button>
                                                             <button
                                                                 onClick={() => handleStatusUpdate(booking.id, 'cancelled')}
-                                                                className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded text-[10px] font-bold uppercase"
+                                                                className="flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded text-[10px] font-bold uppercase transition-colors"
                                                                 title="Cancel"
                                                             >
                                                                 <XCircle size={12} /> NO
@@ -317,14 +317,14 @@ const BookingListPage: React.FC = () => {
                                                     {booking.status === 'confirmed' && booking.settlement_status !== 'settled' && (
                                                         <button
                                                             onClick={() => handleSettle(booking.id, amount)}
-                                                            className="flex items-center gap-1 px-3 py-1.5 bg-dancheong-blue/20 text-dancheong-blue hover:bg-dancheong-blue/30 rounded-lg text-xs transition-colors"
+                                                            className="flex items-center gap-1 px-3 py-1.5 bg-dancheong-blue/20 text-dancheong-blue hover:bg-dancheong-blue/30 rounded-lg text-xs transition-colors w-full justify-center"
                                                         >
                                                             <DollarSign size={14} /> {t('admin.booking.settle')}
                                                         </button>
                                                     )}
                                                     <button
                                                         onClick={() => handleDeleteBooking(booking.id)}
-                                                        className="flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-400/60 hover:bg-red-500/20 hover:text-red-400 rounded text-[10px] font-bold uppercase w-fit transition-colors"
+                                                        className="flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-400/40 hover:bg-red-500/20 hover:text-red-400 rounded text-[10px] font-bold uppercase w-fit mx-auto transition-colors"
                                                         title="Delete"
                                                     >
                                                         <Trash2 size={12} /> {t('common.delete')}
