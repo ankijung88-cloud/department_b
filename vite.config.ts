@@ -14,4 +14,15 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
     },
+    build: {
+        chunkSizeWarningLimit: 1000,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
+                    icons: ['lucide-react'],
+                },
+            },
+        },
+    },
 })

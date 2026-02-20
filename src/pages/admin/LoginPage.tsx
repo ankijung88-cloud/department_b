@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
 
             // Check admin role (simplified check for transition)
             // In a better implementation, the backend would return the user's role
-            if (user.email.includes('admin') || email.includes('admin')) {
+            if (user.role === 'ADMIN') {
                 signIn(token, user);
                 navigate('/admin/products');
             } else {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import multer from 'multer';
+import multer from 'multer'; // multer types are installed in backend and root
 import path from 'path';
 import { uploadFile } from '../controllers/uploadController';
 

@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         id: parsedUser.id,
                         full_name: parsedUser.name,
                         avatar_url: null,
-                        role: parsedUser.email.includes('admin') ? 'ADMIN' : 'USER', // simplified
+                        role: parsedUser.role || 'USER',
                         email: parsedUser.email
                     });
                 }
@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             id: userData.id,
             full_name: userData.name,
             avatar_url: null,
-            role: userData.email.includes('admin') ? 'ADMIN' : 'USER',
+            role: (userData as any).role || 'USER',
             email: userData.email
         });
     };
