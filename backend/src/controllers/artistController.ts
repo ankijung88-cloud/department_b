@@ -4,7 +4,17 @@ import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export const getArtists = async (req: Request, res: Response) => {
     try {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM artists ORDER BY created_at DESC');
+        const { status } = req.query;
+        let query = 'SELECT * FROM artists';
+        const params: any[] = [];
+
+        if (status) {
+            query += ' WHERE status = ?';
+            params.push(status);
+        }
+
+        query += ' ORDER BY created_at DESC';
+        const [rows] = await pool.query<RowDataPacket[]>(query, params);
         res.json(rows);
     } catch (error) {
         console.error('Error fetching artists:', error);
@@ -68,6 +78,31 @@ export const deleteArtist = async (req: Request, res: Response) => {
         res.json({ message: 'Artist deleted successfully' });
     } catch (error) {
         console.error('Error deleting artist:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export const updateArtistStatus = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    try {
+        const [result] = await pool.query<ResultSetHeader>(
+            'UPDATE artists SET status = ? WHERE id = ?',
+            [status, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Artist not found' });
+        }
+
+        res.json({ message: 'Artist status updated successfully' });
+    } catch (error) {
+        console.error('Error updating artist status:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };

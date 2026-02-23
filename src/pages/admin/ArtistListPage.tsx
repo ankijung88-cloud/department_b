@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Artist } from '../../types';
 import { useTranslation } from 'react-i18next';
-import { Edit, Trash2, Plus } from 'lucide-react';
-import { getArtists, deleteArtist } from '../../api/artists';
+import { Edit, Trash2, Plus, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { getArtists, deleteArtist, updateArtistStatus } from '../../api/artists';
 
 const ArtistListPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -36,6 +36,16 @@ const ArtistListPage: React.FC = () => {
         } catch (error: any) {
             console.error('Error deleting artist:', error);
             alert(`Failed to delete artist: ${error.message || 'Unknown error'}`);
+        }
+    };
+
+    const handleStatusUpdate = async (id: number, status: 'approved' | 'rejected') => {
+        try {
+            await updateArtistStatus(id, status);
+            fetchArtists();
+        } catch (error: any) {
+            console.error('Error updating status:', error);
+            alert(`Failed to update status: ${error.message || 'Unknown error'}`);
         }
     };
 
@@ -81,6 +91,7 @@ const ArtistListPage: React.FC = () => {
                             <th className="p-4">Portrait</th>
                             <th className="p-4">Name</th>
                             <th className="p-4">Title</th>
+                            <th className="p-4">Status</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -100,7 +111,42 @@ const ArtistListPage: React.FC = () => {
                                         {artist.title}
                                     </span>
                                 </td>
+                                <td className="p-4">
+                                    {artist.status === 'approved' && (
+                                        <span className="flex items-center text-green-400 text-xs font-bold uppercase">
+                                            <CheckCircle size={14} className="mr-1" /> Approved
+                                        </span>
+                                    )}
+                                    {artist.status === 'pending' && (
+                                        <span className="flex items-center text-yellow-400 text-xs font-bold uppercase">
+                                            <Clock size={14} className="mr-1" /> Pending
+                                        </span>
+                                    )}
+                                    {artist.status === 'rejected' && (
+                                        <span className="flex items-center text-red-500 text-xs font-bold uppercase">
+                                            <XCircle size={14} className="mr-1" /> Rejected
+                                        </span>
+                                    )}
+                                </td>
                                 <td className="p-4 text-right space-x-2">
+                                    {artist.status === 'pending' && (
+                                        <>
+                                            <button
+                                                onClick={() => handleStatusUpdate(artist.id, 'approved')}
+                                                className="p-2 text-green-400 hover:bg-green-400/10 rounded transition-colors"
+                                                title="Approve"
+                                            >
+                                                <CheckCircle size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleStatusUpdate(artist.id, 'rejected')}
+                                                className="p-2 text-orange-400 hover:bg-orange-400/10 rounded transition-colors"
+                                                title="Reject"
+                                            >
+                                                <XCircle size={18} />
+                                            </button>
+                                        </>
+                                    )}
                                     <Link
                                         to={`/admin/artists/${artist.id}`}
                                         className="inline-block p-2 text-blue-400 hover:bg-blue-400/10 rounded transition-colors"

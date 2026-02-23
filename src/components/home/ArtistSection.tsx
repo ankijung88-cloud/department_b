@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Artist } from '../../types';
 import { getArtists } from '../../api/artists';
 
@@ -12,7 +13,7 @@ export const ArtistSection: React.FC = () => {
     React.useEffect(() => {
         const fetchArtists = async () => {
             try {
-                const data = await getArtists();
+                const data = await getArtists('approved');
                 setArtists(data);
             } catch (error) {
                 console.error('Error fetching artists:', error);
@@ -38,9 +39,15 @@ export const ArtistSection: React.FC = () => {
                     <h2 className="text-sm font-bold tracking-widest text-dancheong-red mb-3 uppercase">
                         {t('artist.title')}
                     </h2>
-                    <h3 className="text-3xl md:text-5xl font-serif font-bold text-white">
+                    <h3 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6">
                         {t('artist.subtitle')}
                     </h3>
+                    <Link
+                        to="/artist-apply"
+                        className="inline-block px-8 py-3 bg-dancheong-red text-white text-sm font-bold rounded-full hover:bg-red-700 transition-all shadow-lg"
+                    >
+                        APPLY AS ARTIST
+                    </Link>
                 </motion.div>
             </div>
 
