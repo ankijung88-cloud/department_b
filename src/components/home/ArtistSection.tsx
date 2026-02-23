@@ -10,6 +10,7 @@ export const ArtistSection: React.FC = () => {
     const { t } = useTranslation();
     const [artists, setArtists] = React.useState<Artist[]>([]);
     const [loading, setLoading] = React.useState(true);
+    const [isDragging, setIsDragging] = React.useState(false);
 
     React.useEffect(() => {
         const fetchArtists = async () => {
@@ -58,6 +59,10 @@ export const ArtistSection: React.FC = () => {
                         className="flex space-x-8 px-6 cursor-grab active:cursor-grabbing"
                         drag="x"
                         dragConstraints={{ right: 0, left: -1200 }}
+                        onDragStart={() => setIsDragging(true)}
+                        onDragEnd={() => {
+                            setTimeout(() => setIsDragging(false), 150);
+                        }}
                     >
                         {artists.map((artist, index) => (
                             <motion.div
@@ -68,7 +73,15 @@ export const ArtistSection: React.FC = () => {
                                 transition={{ delay: index * 0.1 }}
                                 className="flex-shrink-0 w-72 md:w-80 group"
                             >
-                                <Link to={`/artist/${artist.id}`} draggable="false">
+                                <Link
+                                    to={`/artist/${artist.id}`}
+                                    draggable="false"
+                                    onClick={(e) => {
+                                        if (isDragging) {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                >
                                     <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
                                         <img
                                             src={formatImageUrl(artist.image_url)}
