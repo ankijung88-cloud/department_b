@@ -26,7 +26,7 @@ export const HeroSection: React.FC = () => {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight"
+                    className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-snug"
                 >
                     {t('hero.title')}
                 </motion.h1>
