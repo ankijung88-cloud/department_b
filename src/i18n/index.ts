@@ -69,17 +69,17 @@ const resources = {
             },
             "hero": {
                 "title": "시선과 취향이 만나는 곳",
-                "subtitle": "시선 끝에 맺힌 세상이 당신의 취향으로 완성되는 과정을 경험해 보십시오, Culture Dept.",
+                "subtitle": "시선 끝에 맺힌 세상이 당신의 취향으로 완성되는 과정을 경험해 보십시오, KOGO",
                 "cta": "층별 안내 보기"
             },
             "featured": {
                 "title": "추천 & 이벤트",
-                "subtitle": "Culture Dept.에서 만나는 특별한 경험",
+                "subtitle": "KOGO에서 만나는 특별한 경험",
                 "no_content": "등록된 콘텐츠가 없습니다."
             },
             "artist": {
                 "title": "아티스트",
-                "subtitle": "Culture Dept.와 함께하는 예술가들"
+                "subtitle": "KOGO와 함께하는 예술가들"
             },
             "auth": {
                 "login": "로그인",
@@ -109,7 +109,7 @@ const resources = {
             },
             "footer": {
                 "address": "서울특별시 중구 소공로 123",
-                "copyright": "© 2026 Culture Dept. Store. All rights reserved.",
+                "copyright": "© 2026 KOGO Store. All rights reserved.",
                 "privacy": "개인정보처리방침",
                 "terms": "이용약관",
                 "shop": "SHOP",
@@ -335,17 +335,17 @@ const resources = {
             },
             "hero": {
                 "title": "Discover the Beauty of Korea",
-                "subtitle": "Where Tradition Meets Modernity, Culture Dept.",
+                "subtitle": "Where Tradition Meets Modernity, KOGO",
                 "cta": "Explore Floors"
             },
             "featured": {
                 "title": "Featured & Events",
-                "subtitle": "Special Experiences at Culture Dept.",
+                "subtitle": "Special Experiences at KOGO",
                 "no_content": "No content registered yet."
             },
             "artist": {
                 "title": "Artists",
-                "subtitle": "Artists with Culture Dept."
+                "subtitle": "Artists with KOGO"
             },
             "auth": {
                 "login": "Login",
@@ -375,7 +375,7 @@ const resources = {
             },
             "footer": {
                 "address": "123 Sogong-ro, Jung-gu, Seoul",
-                "copyright": "© 2026 Culture Dept. Store. All rights reserved.",
+                "copyright": "© 2026 KOGO Store. All rights reserved.",
                 "privacy": "Privacy Policy",
                 "terms": "Terms of Service",
                 "shop": "SHOP",
@@ -421,7 +421,7 @@ const resources = {
                     "confirm": "Confirm Payment",
                     "success": "Booking Completed",
                     "info": "Booking Info",
-                    "bank_info": "Account: Shinhan Bank 123-456-789012 (Holder: Culture Dept)",
+                    "bank_info": "Account: Shinhan Bank 123-456-789012 (Holder: KOGO)",
                     "close": "Close",
                     "download": "Download"
                 },
@@ -585,12 +585,12 @@ const resources = {
             },
             "hero": {
                 "title": "韓国の美、現代的な感覚で出会う",
-                "subtitle": "伝統と現代が共存する複合文化空間, Culture Dept.",
+                "subtitle": "伝統と現代が共存する複合文化空間, KOGO",
                 "cta": "フロアガイドを見る"
             },
             "featured": {
                 "title": "おすすめ & イベント",
-                "subtitle": "Culture Dept.で出会う特別な体験",
+                "subtitle": "KOGOで出会う特別な体験",
                 "no_content": "登録されたコンテンツがありません。"
             },
             "auth": {
@@ -616,7 +616,7 @@ const resources = {
             },
             "footer": {
                 "address": "ソウル特別市中区小公路123",
-                "copyright": "© 2026 Culture Dept. Store. All rights reserved.",
+                "copyright": "© 2026 KOGO Store. All rights reserved.",
                 "privacy": "プライバシーポリシー",
                 "terms": "利用規約",
                 "shop": "SHOP",
@@ -720,12 +720,12 @@ const resources = {
             },
             "hero": {
                 "title": "以现代感邂逅韩国之美",
-                "subtitle": "传统与现代共存的综合文化空间, Culture Dept.",
+                "subtitle": "传统与现代共存的综合文化空间, KOGO",
                 "cta": "查看楼层指南"
             },
             "featured": {
                 "title": "推荐 & 活动",
-                "subtitle": "在 Culture Dept. 遇见的特别体验",
+                "subtitle": "在 KOGO 遇见的特别体验",
                 "no_content": "暂无已注册的内容。"
             },
             "auth": {
@@ -751,7 +751,7 @@ const resources = {
             },
             "footer": {
                 "address": "首尔特别市中区小公路123",
-                "copyright": "© 2026 Culture Dept. Store. All rights reserved.",
+                "copyright": "© 2026 KOGO Store. All rights reserved.",
                 "privacy": "隐私政策",
                 "terms": "使用条款",
                 "shop": "SHOP",
