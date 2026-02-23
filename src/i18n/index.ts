@@ -13,7 +13,7 @@ const resources = {
                 "mypage": "마이페이지",
                 "about": "소개",
                 "store": "스토어",
-                "gallery": "CHWIHYANG-GWAN",
+                "gallery": "KOGO",
                 "trend": "트렌드 / 팝업",
                 "tickets": "공연 / 전시",
                 "art": "활동 / 스타일",

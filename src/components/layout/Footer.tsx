@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
         <footer className="bg-[#222222] text-white/60 py-12 border-t border-white/5">
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-1">
-                    <h3 className="text-xl font-serif font-bold text-white mb-4">CHWIHYANG-GWAN</h3>
+                    <h3 className="text-xl font-serif font-bold text-white mb-4">KOGO</h3>
                     <p className="text-sm leading-relaxed">
                         {t('footer.description')}
                     </p>

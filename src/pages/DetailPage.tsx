@@ -697,7 +697,7 @@ export const DetailPage: React.FC = () => {
                                                     <div className="mt-2 text-xs opacity-80 leading-tight">
                                                         <p>{t('common.payment.bank_name')}: 국민은행</p>
                                                         <p>{t('common.payment.account_number')}: 123-45678-90</p>
-                                                        <p>{t('common.payment.account_holder')}: CHWIHYANG-GWAN</p>
+                                                        <p>{t('common.payment.account_holder')}: KOGO</p>
                                                     </div>
                                                 )}
                                             </div>

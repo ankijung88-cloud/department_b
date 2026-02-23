@@ -46,12 +46,12 @@ export const AboutSection: React.FC = () => {
                         </h3>
                         <div className="space-y-6 text-lg text-white/70 font-light leading-relaxed">
                             <p>
-                                CHWIHYANG-GWAN은 저마다의 고유한 시선과 그 섬세한 결을 존중하며, 감각적인 라이프스타일을 잇는 가교입니다.
+                                KOGO는 저마다의 고유한 시선과 그 섬세한 결을 존중하며, 감각적인 라이프스타일을 잇는 가교입니다.
                                 우리는 단순히 상품을 판매하는 것을 넘어, 문화를 경험하고 향유하는 새로운 방식을 제안합니다.
                             </p>
                             <p>
                                 당신의 숨결을 트여줄 클래스 부터, 고유한 전시와 공연까지.
-                                당신만의 정체성이 온전히 담긴 당신의 감각을 CHWIHYANG-GWAN과 함께 완성해보세요.
+                                당신만의 정체성이 온전히 담긴 당신의 감각을 KOGO와 함께 완성해보세요.
                             </p>
                         </div>
 

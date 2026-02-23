@@ -132,7 +132,7 @@ const Header: React.FC = () => {
                 }`}>
                 <div className={`container mx-auto px-4 flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
                     <Link to="/" className="text-2xl font-serif font-bold text-white tracking-tighter">
-                        CHWIHYANG-GWAN
+                        KOGO
                     </Link>
 
                     {/* Desktop Navigation */}
