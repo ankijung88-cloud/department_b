@@ -1,49 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-
-interface Artist {
-    id: number;
-    name: string;
-    title: string;
-    imageUrl: string;
-}
-
-const mockArtists: Artist[] = [
-    {
-        id: 1,
-        name: 'Kim Se-young',
-        title: 'Modern Painter',
-        imageUrl: '/image/artists/artist1.png'
-    },
-    {
-        id: 2,
-        name: 'Lee Jung-ho',
-        title: 'Contemporary Sculptor',
-        imageUrl: '/image/artists/artist2.png'
-    },
-    {
-        id: 3,
-        name: 'Park Min-ji',
-        title: 'Media Artist',
-        imageUrl: '/image/artists/artist3.png'
-    },
-    {
-        id: 4,
-        name: 'Choi Yong-sool',
-        title: 'Traditional Craftsman',
-        imageUrl: '/image/artists/artist4.png'
-    },
-    {
-        id: 5,
-        name: 'Jung Ah-reum',
-        title: 'Performance Artist',
-        imageUrl: '/image/artists/artist5.png'
-    }
-];
+import { Artist } from '../../types';
+import { getArtists } from '../../api/artists';
 
 export const ArtistSection: React.FC = () => {
     const { t } = useTranslation();
+    const [artists, setArtists] = React.useState<Artist[]>([]);
+    const [loading, setLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        const fetchArtists = async () => {
+            try {
+                const data = await getArtists();
+                setArtists(data);
+            } catch (error) {
+                console.error('Error fetching artists:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArtists();
+    }, []);
+
+    if (loading) return null;
+    if (artists.length === 0) return null;
 
     return (
         <section className="py-24 bg-black overflow-hidden">
@@ -69,7 +50,7 @@ export const ArtistSection: React.FC = () => {
                     drag="x"
                     dragConstraints={{ right: 0, left: -1200 }}
                 >
-                    {mockArtists.map((artist, index) => (
+                    {artists.map((artist, index) => (
                         <motion.div
                             key={artist.id}
                             initial={{ opacity: 0, scale: 0.8 }}
@@ -80,7 +61,7 @@ export const ArtistSection: React.FC = () => {
                         >
                             <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
                                 <img
-                                    src={artist.imageUrl}
+                                    src={artist.image_url}
                                     alt={artist.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
@@ -114,3 +95,4 @@ export const ArtistSection: React.FC = () => {
         </section>
     );
 };
+

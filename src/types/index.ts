@@ -45,3 +45,11 @@ export interface FloorCategory {
     bgImage: string;
     content?: FloorContent[];
 }
+
+export interface Artist {
+    id: number;
+    name: string;
+    title: string;
+    image_url: string;
+    created_at?: string;
+}

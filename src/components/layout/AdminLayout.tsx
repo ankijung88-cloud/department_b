@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, Package, User as UserIcon, Wallet } from 'lucide-react';
+import { LogOut, Package, User as UserIcon, Wallet, Disc } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const AdminLayout: React.FC = () => {
@@ -41,6 +41,14 @@ const AdminLayout: React.FC = () => {
                         {t('admin.sidebar.users')}
                     </Link>
                     <Link
+                        to="/admin/artists"
+                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/artists') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            }`}
+                    >
+                        <Disc size={20} className="mr-3" />
+                        Artist Management
+                    </Link>
+                    <Link
                         to="/admin/bookings"
                         className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/bookings') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
                             }`}
@@ -70,3 +78,4 @@ const AdminLayout: React.FC = () => {
 };
 
 export default AdminLayout;
+

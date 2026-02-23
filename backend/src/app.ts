@@ -5,6 +5,7 @@ import productRoutes from './routes/productRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import userRoutes from './routes/userRoutes';
 import bookingRoutes from './routes/bookingRoutes';
+import artistRoutes from './routes/artistRoutes';
 import path from 'path';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/artists', artistRoutes);
 
 // Translation Endpoint
 app.get('/', (req, res) => {
