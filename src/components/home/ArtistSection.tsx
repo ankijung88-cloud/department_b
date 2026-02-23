@@ -68,11 +68,12 @@ export const ArtistSection: React.FC = () => {
                                 transition={{ delay: index * 0.1 }}
                                 className="flex-shrink-0 w-72 md:w-80 group"
                             >
-                                <Link to={`/artist/${artist.id}`}>
+                                <Link to={`/artist/${artist.id}`} draggable="false">
                                     <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
                                         <img
                                             src={formatImageUrl(artist.image_url)}
                                             alt={artist.name}
+                                            draggable="false"
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
