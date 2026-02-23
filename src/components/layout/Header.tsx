@@ -132,7 +132,7 @@ const Header: React.FC = () => {
                 }`}>
                 <div className={`container mx-auto px-4 flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
                     <Link to="/" className="text-2xl font-serif font-bold text-white tracking-tighter flex items-center gap-2">
-                        <img src="/logo.png" alt="KOGO Logo" className="w-8 h-8 object-contain" />
+                        <img src="/logo.png" alt="KOGO Logo" className="w-8 h-8 object-contain rounded-[20%] overflow-hidden" />
                         KOGO
                     </Link>
 
