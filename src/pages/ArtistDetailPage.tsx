@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Artist, FeaturedItem } from '../types';
+import { Artist } from '../types';
 import { getArtistById } from '../api/artists';
-import { getProductsByUser } from '../api/products';
 import { formatImageUrl } from '../api/client';
 import { ArrowLeft, User, Package, MessageSquare } from 'lucide-react';
 
 const ArtistDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [artist, setArtist] = useState<Artist | null>(null);
-    const [products, setProducts] = useState<FeaturedItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,10 +18,6 @@ const ArtistDetailPage: React.FC = () => {
                 const artistData = await getArtistById(parseInt(id));
                 if (artistData) {
                     setArtist(artistData);
-                    if (artistData.user_id) {
-                        const productData = await getProductsByUser(artistData.user_id);
-                        setProducts(productData);
-                    }
                 }
             } catch (error) {
                 console.error('Failed to load artist details:', error);
@@ -100,10 +94,6 @@ const ArtistDetailPage: React.FC = () => {
 
                                     <div className="pt-8 border-t border-white/10 flex gap-12">
                                         <div>
-                                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest mb-1">Products</p>
-                                            <p className="text-2xl font-serif">{products.length}</p>
-                                        </div>
-                                        <div>
                                             <p className="text-white/40 text-xs font-bold uppercase tracking-widest mb-1">Status</p>
                                             <p className="text-dancheong-red text-sm font-bold uppercase">{artist.status}</p>
                                         </div>
@@ -115,7 +105,7 @@ const ArtistDetailPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Featured Products Grid */}
+            {/* Products Grid - Placeholder/Empty for now until new mapping logic is defined */}
             <div className="bg-[#111] py-24 px-6">
                 <div className="container mx-auto max-w-6xl">
                     <div className="flex items-center justify-between mb-16">
@@ -125,38 +115,10 @@ const ArtistDetailPage: React.FC = () => {
                         </div>
                     </div>
 
-                    {products.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {products.map((product, idx) => (
-                                <motion.div
-                                    key={product.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className="group"
-                                >
-                                    <Link to={`/detail/${product.id}`} className="block">
-                                        <div className="relative aspect-[4/5] rounded-xl overflow-hidden glass-morphism border border-white/10 mb-6">
-                                            <img
-                                                src={formatImageUrl(product.imageUrl)}
-                                                alt={product.title.ko}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        </div>
-                                        <h4 className="text-lg font-bold mb-1">{product.title.ko}</h4>
-                                        <p className="text-dancheong-red text-xs font-bold uppercase tracking-widest">{product.category}</p>
-                                    </Link>
-                                </motion.div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-32 glass-morphism rounded-2xl border border-white/5 border-dashed">
-                            <Package className="mx-auto text-white/20 mb-4" size={48} />
-                            <p className="text-white/40 italic">This artist hasn't listed any products yet.</p>
-                        </div>
-                    )}
+                    <div className="text-center py-32 glass-morphism rounded-2xl border border-white/5 border-dashed">
+                        <Package className="mx-auto text-white/20 mb-4" size={48} />
+                        <p className="text-white/40 italic">Gallery updates coming soon.</p>
+                    </div>
                 </div>
             </div>
 

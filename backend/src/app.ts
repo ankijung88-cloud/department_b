@@ -52,9 +52,23 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
     res.status(200).json({});
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Translation Service Ready`);
+
+    // Auto-migration for artist table
+    try {
+        const pool = (await import('./config/db')).default;
+        console.log('Running auto-migration for artists table...');
+        await pool.query('ALTER TABLE artists ADD COLUMN bio TEXT AFTER image_url');
+        console.log('Migration: bio column added successfully.');
+    } catch (error: any) {
+        if (error.code === 'ER_DUP_COLUMN_NAME') {
+            console.log('Migration: Columns already exist.');
+        } else {
+            console.error('Migration error:', error.message);
+        }
+    }
 });
 
 export default app;

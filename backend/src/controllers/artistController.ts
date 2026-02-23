@@ -40,34 +40,34 @@ export const getArtistById = async (req: Request, res: Response) => {
 
 export const createArtist = async (req: Request, res: Response) => {
     try {
-        const { name, title, image_url, user_id, bio } = req.body;
+        const { name, title, image_url, bio } = req.body;
 
         const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO artists (name, title, image_url, user_id, bio) VALUES (?, ?, ?, ?, ?)',
-            [name, title, image_url, user_id, bio]
+            'INSERT INTO artists (name, title, image_url, bio) VALUES (?, ?, ?, ?)',
+            [name, title, image_url, bio]
         );
 
         res.status(201).json({ id: result.insertId, message: 'Artist created successfully' });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating artist:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Internal Server Error', error: error.message, detail: error });
     }
 };
 
 export const updateArtist = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, title, image_url, user_id, bio } = req.body;
+        const { name, title, image_url, bio } = req.body;
 
         await pool.query(
-            'UPDATE artists SET name = ?, title = ?, image_url = ?, user_id = ?, bio = ? WHERE id = ?',
-            [name, title, image_url, user_id, bio, id]
+            'UPDATE artists SET name = ?, title = ?, image_url = ?, bio = ? WHERE id = ?',
+            [name, title, image_url, bio, id]
         );
 
         res.json({ message: 'Artist updated successfully' });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error updating artist:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Internal Server Error', error: error.message, detail: error });
     }
 };
 
