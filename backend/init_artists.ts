@@ -1,15 +1,14 @@
 import pool from './src/config/db';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// For CommonJS (non-ESM) projects, __dirname is available directly.
+// If it's a TS file run by ts-node in CJS mode, this is safer.
+const scriptDir = __dirname;
 
 async function init() {
     try {
         console.log('Initializing artists table...');
-        const sqlPath = path.join(__dirname, 'scripts', 'init_artists.sql');
+        const sqlPath = path.join(scriptDir, 'scripts', 'init_artists.sql');
         const sql = fs.readFileSync(sqlPath, 'utf8');
 
         const queries = sql.split(';').filter(q => q.trim().length > 0);
