@@ -164,7 +164,7 @@ const ArtistListPage: React.FC = () => {
                         ))}
                         {filteredArtists.length === 0 && (
                             <tr>
-                                <td colSpan={4} className="p-8 text-center text-white/40">
+                                <td colSpan={5} className="p-8 text-center text-white/40">
                                     No artists found.
                                 </td>
                             </tr>
