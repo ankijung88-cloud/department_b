@@ -5,7 +5,10 @@ export const API_URL = import.meta.env.VITE_API_URL || '';
 export const formatImageUrl = (url: string) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+    // Ensure the URL starts with a slash
+    const path = url.startsWith('/') ? url : `/${url}`;
+    // Prepend API_URL if it exists (e.g., in development)
+    return `${API_URL}${path}`;
 };
 
 const api = axios.create({
