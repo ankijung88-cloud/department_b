@@ -40,11 +40,11 @@ export const getArtistById = async (req: Request, res: Response) => {
 
 export const createArtist = async (req: Request, res: Response) => {
     try {
-        const { name, title, image_url } = req.body;
+        const { name, title, image_url, user_id, bio } = req.body;
 
         const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO artists (name, title, image_url) VALUES (?, ?, ?)',
-            [name, title, image_url]
+            'INSERT INTO artists (name, title, image_url, user_id, bio) VALUES (?, ?, ?, ?, ?)',
+            [name, title, image_url, user_id, bio]
         );
 
         res.status(201).json({ id: result.insertId, message: 'Artist created successfully' });
@@ -57,11 +57,11 @@ export const createArtist = async (req: Request, res: Response) => {
 export const updateArtist = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, title, image_url } = req.body;
+        const { name, title, image_url, user_id, bio } = req.body;
 
         await pool.query(
-            'UPDATE artists SET name = ?, title = ?, image_url = ? WHERE id = ?',
-            [name, title, image_url, id]
+            'UPDATE artists SET name = ?, title = ?, image_url = ?, user_id = ?, bio = ? WHERE id = ?',
+            [name, title, image_url, user_id, bio, id]
         );
 
         res.json({ message: 'Artist updated successfully' });

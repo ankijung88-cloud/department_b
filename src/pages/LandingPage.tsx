@@ -9,8 +9,8 @@ const LandingPage: React.FC = () => {
     return (
         <>
             <HeroSection />
-            <ArtistSection />
             <FloorGuideSection />
+            <ArtistSection />
             <FeaturedSection />
             <AboutSection />
         </>

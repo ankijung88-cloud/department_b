@@ -68,29 +68,31 @@ export const ArtistSection: React.FC = () => {
                                 transition={{ delay: index * 0.1 }}
                                 className="flex-shrink-0 w-72 md:w-80 group"
                             >
-                                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
-                                    <img
-                                        src={formatImageUrl(artist.image_url)}
-                                        alt={artist.name}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                                <Link to={`/artist/${artist.id}`}>
+                                    <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
+                                        <img
+                                            src={formatImageUrl(artist.image_url)}
+                                            alt={artist.name}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
-                                    <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                        <h4 className="text-2xl font-bold text-white mb-1">{artist.name}</h4>
-                                        <p className="text-dancheong-red text-sm font-medium tracking-wider uppercase">{artist.title}</p>
+                                        <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                            <h4 className="text-2xl font-bold text-white mb-1">{artist.name}</h4>
+                                            <p className="text-dancheong-red text-sm font-medium tracking-wider uppercase">{artist.title}</p>
 
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            whileHover={{ opacity: 1, height: 'auto' }}
-                                            className="mt-4 overflow-hidden"
-                                        >
-                                            <button className="text-white text-xs border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">
-                                                VIEW PROFILE
-                                            </button>
-                                        </motion.div>
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                whileHover={{ opacity: 1, height: 'auto' }}
+                                                className="mt-4 overflow-hidden"
+                                            >
+                                                <button className="text-white text-xs border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">
+                                                    VIEW PROFILE
+                                                </button>
+                                            </motion.div>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </motion.div>
                         ))}
                     </motion.div>

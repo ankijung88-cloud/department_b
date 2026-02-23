@@ -17,8 +17,21 @@ const ArtistFormPage: React.FC = () => {
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const [bio, setBio] = useState('');
+    const [userId, setUserId] = useState('');
+    const [users, setUsers] = useState<any[]>([]);
 
     useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await api.get('/api/users');
+                setUsers(response.data || []);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        };
+        fetchUsers();
+
         if (isEditMode && id) {
             const loadArtist = async () => {
                 try {
@@ -27,6 +40,8 @@ const ArtistFormPage: React.FC = () => {
                         setName(artist.name);
                         setTitle(artist.title);
                         setImageUrl(artist.image_url);
+                        setBio(artist.bio || '');
+                        setUserId(artist.user_id || '');
                     } else {
                         navigate('/admin/artists');
                     }
@@ -75,7 +90,9 @@ const ArtistFormPage: React.FC = () => {
         const artistData = {
             name,
             title,
-            image_url: imageUrl
+            image_url: imageUrl,
+            user_id: userId || null,
+            bio: bio
         };
 
         try {
@@ -172,6 +189,33 @@ const ArtistFormPage: React.FC = () => {
                                 className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
                             />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-white/80 text-sm font-bold mb-2">Linked User (System Account)</label>
+                        <select
+                            value={userId}
+                            onChange={(e) => setUserId(e.target.value)}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
+                        >
+                            <option value="">-- No linked account --</option>
+                            {users.map(u => (
+                                <option key={u.id} value={u.id} className="bg-charcoal text-white">
+                                    {u.full_name || u.email} ({u.role})
+                                </option>
+                            ))}
+                        </select>
+                        <p className="text-white/40 text-xs mt-1 italic">Selecting a user links this profile to their uploaded products.</p>
+                    </div>
+
+                    <div>
+                        <label className="block text-white/80 text-sm font-bold mb-2">Artist Biography</label>
+                        <textarea
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            placeholder="Tell the story of this artist..."
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red h-40 resize-none"
+                        />
                     </div>
 
                     <div className="flex justify-end pt-6 border-t border-white/5">

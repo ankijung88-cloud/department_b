@@ -25,6 +25,7 @@ import BookingListPage from './pages/admin/BookingListPage';
 import ArtistListPage from './pages/admin/ArtistListPage';
 import ArtistFormPage from './pages/admin/ArtistFormPage';
 import ArtistRequestPage from './pages/ArtistRequestPage';
+import ArtistDetailPage from './pages/ArtistDetailPage';
 import MyPage from './pages/MyPage';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/login" element={<Navigate to="/" replace />} />
                     <Route path="/artist-apply" element={<ArtistRequestPage />} />
+                    <Route path="/artist/:id" element={<ArtistDetailPage />} />
                 </Route>
 
                 {/* User Routes (Protected but not Admin-only) */}

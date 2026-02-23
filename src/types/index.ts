@@ -51,6 +51,8 @@ export interface Artist {
     name: string;
     title: string;
     image_url: string;
+    user_id?: string | null;
+    bio?: string | null;
     status?: 'pending' | 'approved' | 'rejected';
     created_at?: string;
 }
