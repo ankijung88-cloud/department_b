@@ -77,6 +77,10 @@ const resources = {
                 "subtitle": "Culture Dept.에서 만나는 특별한 경험",
                 "no_content": "등록된 콘텐츠가 없습니다."
             },
+            "artist": {
+                "title": "아티스트",
+                "subtitle": "Culture Dept.와 함께하는 예술가들"
+            },
             "auth": {
                 "login": "로그인",
                 "register": "회원가입",
@@ -338,6 +342,10 @@ const resources = {
                 "title": "Featured & Events",
                 "subtitle": "Special Experiences at Culture Dept.",
                 "no_content": "No content registered yet."
+            },
+            "artist": {
+                "title": "Artists",
+                "subtitle": "Artists with Culture Dept."
             },
             "auth": {
                 "login": "Login",
