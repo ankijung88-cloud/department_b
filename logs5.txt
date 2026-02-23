@@ -1,0 +1,17 @@
+Starting script
+Target user: 안기정
+Source file: C:\Users\안기정\.gemini\antigravity\brain\821c9c05-11cf-4c1f-baf4-23f4650d39e1\media__1771833273276.jpg true
+Reading image with Jimp...
+Image read successful. Scanning...
+Scan complete. Generating PNG buffer...
+c:\dev\department-b\node_modules\@jimp\core\dist\commonjs\index.js:263
+                throw new Error(`Unsupported MIME type: ${mime}`);
+                      ^
+
+Error: Unsupported MIME type: undefined
+    at Jimp.getBuffer (c:\dev\department-b\node_modules\@jimp\core\dist\commonjs\index.js:263:23)
+    at buffer (c:\dev\department-b\remove_bg_v2.cjs:43:19)
+    at new Promise (<anonymous>)
+    at run (c:\dev\department-b\remove_bg_v2.cjs:42:30)
+
+Node.js v24.13.0
