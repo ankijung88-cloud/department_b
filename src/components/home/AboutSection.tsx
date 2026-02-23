@@ -40,7 +40,7 @@ export const AboutSection: React.FC = () => {
                         className="lg:w-1/2"
                     >
                         <h2 className="text-sm font-bold tracking-widest text-dancheong-green mb-4 uppercase">About Us</h2>
-                        <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-8 leading-tight">
+                        <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-8 leading-sung">
                             정체성과 감각을 잇는 <br />
                             CREATIVE PARTNER
                         </h3>
