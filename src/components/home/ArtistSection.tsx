@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { formatImageUrl } from '../../api/client';
 import { Artist } from '../../types';
 import { getArtists } from '../../api/artists';
 
@@ -69,7 +70,7 @@ export const ArtistSection: React.FC = () => {
                             >
                                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
                                     <img
-                                        src={artist.image_url}
+                                        src={formatImageUrl(artist.image_url)}
                                         alt={artist.name}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />

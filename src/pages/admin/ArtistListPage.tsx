@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { formatImageUrl } from '../../api/client';
 import { Artist } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { Edit, Trash2, Plus, CheckCircle, XCircle, Clock } from 'lucide-react';
@@ -100,7 +101,7 @@ const ArtistListPage: React.FC = () => {
                             <tr key={artist.id} className="hover:bg-white/5 transition-colors">
                                 <td className="p-4">
                                     <img
-                                        src={artist.image_url}
+                                        src={formatImageUrl(artist.image_url)}
                                         alt={artist.name}
                                         className="w-12 h-12 object-cover rounded-full border border-white/10"
                                     />

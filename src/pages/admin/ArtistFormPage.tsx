@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import api from '../../api/client';
+import api, { formatImageUrl } from '../../api/client';
 import { getArtistById, createArtist, updateArtist } from '../../api/artists';
 import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 
@@ -117,7 +117,7 @@ const ArtistFormPage: React.FC = () => {
                         <div className="flex items-center space-x-4">
                             {imageUrl && (
                                 <div className="relative group">
-                                    <img src={imageUrl} alt="Preview" className="w-48 h-48 object-cover rounded-lg border border-white/10" />
+                                    <img src={formatImageUrl(imageUrl)} alt="Preview" className="w-48 h-48 object-cover rounded-lg border border-white/10" />
                                     <button
                                         type="button"
                                         onClick={() => setImageUrl('')}
