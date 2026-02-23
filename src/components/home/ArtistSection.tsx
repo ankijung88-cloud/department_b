@@ -25,7 +25,7 @@ export const ArtistSection: React.FC = () => {
     }, []);
 
     if (loading) return null;
-    if (artists.length === 0) return null;
+    // Removed: if (artists.length === 0) return null;
 
     return (
         <section className="py-24 bg-black overflow-hidden">
@@ -52,46 +52,52 @@ export const ArtistSection: React.FC = () => {
             </div>
 
             <div className="relative">
-                <motion.div
-                    className="flex space-x-8 px-6 cursor-grab active:cursor-grabbing"
-                    drag="x"
-                    dragConstraints={{ right: 0, left: -1200 }}
-                >
-                    {artists.map((artist, index) => (
-                        <motion.div
-                            key={artist.id}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.1 }}
-                            className="flex-shrink-0 w-72 md:w-80 group"
-                        >
-                            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
-                                <img
-                                    src={artist.image_url}
-                                    alt={artist.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                {artists.length > 0 ? (
+                    <motion.div
+                        className="flex space-x-8 px-6 cursor-grab active:cursor-grabbing"
+                        drag="x"
+                        dragConstraints={{ right: 0, left: -1200 }}
+                    >
+                        {artists.map((artist, index) => (
+                            <motion.div
+                                key={artist.id}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex-shrink-0 w-72 md:w-80 group"
+                            >
+                                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-morphism border border-white/10">
+                                    <img
+                                        src={artist.image_url}
+                                        alt={artist.name}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
-                                <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                    <h4 className="text-2xl font-bold text-white mb-1">{artist.name}</h4>
-                                    <p className="text-dancheong-red text-sm font-medium tracking-wider uppercase">{artist.title}</p>
+                                    <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                        <h4 className="text-2xl font-bold text-white mb-1">{artist.name}</h4>
+                                        <p className="text-dancheong-red text-sm font-medium tracking-wider uppercase">{artist.title}</p>
 
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        whileHover={{ opacity: 1, height: 'auto' }}
-                                        className="mt-4 overflow-hidden"
-                                    >
-                                        <button className="text-white text-xs border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">
-                                            VIEW PROFILE
-                                        </button>
-                                    </motion.div>
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            whileHover={{ opacity: 1, height: 'auto' }}
+                                            className="mt-4 overflow-hidden"
+                                        >
+                                            <button className="text-white text-xs border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-colors">
+                                                VIEW PROFILE
+                                            </button>
+                                        </motion.div>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </motion.div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                ) : (
+                    <div className="text-center py-20">
+                        <p className="text-white/40 italic">Waiting for our first KOGO Artist to be featured...</p>
+                    </div>
+                )}
             </div>
 
             <div className="mt-12 flex justify-center space-x-2">
