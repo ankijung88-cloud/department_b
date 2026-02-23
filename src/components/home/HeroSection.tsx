@@ -55,14 +55,18 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Scroll Indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/70"
-            >
-                <span className="text-sm tracking-widest uppercase">Scroll Down</span>
-            </motion.div>
+            <div className="absolute bottom-10 left-0 right-0 z-10 w-full pointer-events-none">
+                <div className="container mx-auto px-6 text-center">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, y: [0, 10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                        className="inline-block text-white/70"
+                    >
+                        <span className="text-sm tracking-widest uppercase">Scroll Down</span>
+                    </motion.div>
+                </div>
+            </div>
 
             {/* Floor Guide Modal */}
             <FloorGuideModal isOpen={isFloorGuideModalOpen} onClose={() => setIsFloorGuideModalOpen(false)} />
