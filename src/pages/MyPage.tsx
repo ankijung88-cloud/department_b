@@ -464,9 +464,9 @@ const MyPage: React.FC = () => {
                                                             </td>
                                                             <td className="px-6 py-4 text-center">
                                                                 <span className={`px-2 py-1 rounded text-xs font-bold tracking-wider ${order.shipping_status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                        order.shipping_status === 'shipping' ? 'bg-blue-500/20 text-blue-400' :
-                                                                            order.shipping_status === 'delivered' ? 'bg-green-500/20 text-green-400' :
-                                                                                'bg-red-500/20 text-red-400'
+                                                                    order.shipping_status === 'shipping' ? 'bg-blue-500/20 text-blue-400' :
+                                                                        order.shipping_status === 'delivered' ? 'bg-green-500/20 text-green-400' :
+                                                                            'bg-red-500/20 text-red-400'
                                                                     }`}>
                                                                     {translateShippingStatus(order.shipping_status)}
                                                                 </span>
