@@ -14,6 +14,7 @@ import FloorGuidePage from './pages/FloorGuidePage';
 import AboutPage from './pages/AboutPage';
 import CartPage from './pages/CartPage';
 import AllProductsPage from './pages/AllProductsPage';
+import AllGoodsPage from './pages/AllGoodsPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminLayout from './components/layout/AdminLayout';
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
                     <Route path="/:category" element={<CategoryPage />} />
                     <Route path="/all-products" element={<AllProductsPage />} />
+                    <Route path="/all-goods" element={<AllGoodsPage />} />
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/login" element={<Navigate to="/" replace />} />
                     <Route path="/artist-apply" element={<ArtistRequestPage />} />
