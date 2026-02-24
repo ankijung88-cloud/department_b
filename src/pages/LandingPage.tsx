@@ -7,13 +7,13 @@ import { AboutSection } from '../components/home/AboutSection';
 
 const LandingPage: React.FC = () => {
     return (
-        <>
-            <HeroSection />
-            <FloorGuideSection />
-            <ArtistSection />
-            <FeaturedSection />
-            <AboutSection />
-        </>
+        <div className="w-full">
+            <div className="snap-start snap-always w-full"><HeroSection /></div>
+            <div className="snap-start snap-always w-full"><FloorGuideSection /></div>
+            <div className="snap-start snap-always w-full"><ArtistSection /></div>
+            <div className="snap-start snap-always w-full"><FeaturedSection /></div>
+            <div className="snap-start snap-always w-full"><AboutSection /></div>
+        </div>
     );
 };
 
