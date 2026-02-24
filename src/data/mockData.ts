@@ -11,7 +11,7 @@ export const FLOOR_CATEGORIES: FloorCategory[] = [
             zh: '流行趋势 / 快闪店'
         },
         description: {
-            ko: '가장 핫한 컬처 트렌드를 만나보세요.',
+            ko: 'HOT한 컬처 트렌드를 만나보세요.',
             en: 'Discover the hottest K-Culture trends and goods.',
             ja: '最もホットなK-カルトレンドに出会ってください。',
             zh: '探索最热门的 K-Culture 趋势。'
