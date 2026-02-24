@@ -4,6 +4,7 @@ import { X, CreditCard, Landmark } from 'lucide-react';
 import { Good, Order } from '../../types';
 import { createOrder } from '../../api/orders';
 import { useAuth } from '../../context/AuthContext';
+import { formatImageUrl } from '../../api/client';
 
 interface CheckoutModalProps {
     isOpen: boolean;
@@ -112,9 +113,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, g
                                     상품 결제
                                 </h2>
 
-                                <div className="flex gap-4 mb-6 bg-black/20 p-4 rounded-xl border border-white/5">
-                                    <img src={good.image_url} alt={good.name} className="w-20 h-20 object-cover rounded-lg bg-black/50" />
-                                    <div>
+                                <div className="flex items-center space-x-4 mb-8 bg-black/20 p-4 rounded-xl border border-white/5">
+                                    <img src={formatImageUrl(good.image_url)} alt={good.name} className="w-20 h-20 object-cover rounded-lg bg-black/50" />
+                                    <div className="flex-1">
                                         <h3 className="font-bold text-white">{good.name}</h3>
                                         <p className="text-dancheong-red font-medium mt-1">{Number(good.price).toLocaleString()}원</p>
                                     </div>

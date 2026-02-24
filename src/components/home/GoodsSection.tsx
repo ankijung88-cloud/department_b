@@ -6,6 +6,7 @@ import { CheckoutModal } from '../common/CheckoutModal';
 import { ShoppingBag } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../auth/LoginModal';
+import { formatImageUrl } from '../../api/client';
 
 export const GoodsSection: React.FC = () => {
     const [goods, setGoods] = useState<Good[]>([]);
@@ -87,7 +88,7 @@ export const GoodsSection: React.FC = () => {
                             >
                                 <div className="relative aspect-square overflow-hidden bg-black/50">
                                     <img
-                                        src={good.image_url}
+                                        src={formatImageUrl(good.image_url)}
                                         alt={good.name}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />

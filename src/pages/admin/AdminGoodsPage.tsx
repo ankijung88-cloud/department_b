@@ -1,13 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { getGoods, createGood, updateGood, deleteGood } from '../../api/goods';
 import { Good } from '../../types';
-import { Plus, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Upload } from 'lucide-react';
+import api, { formatImageUrl } from '../../api/client';
 
 const AdminGoodsPage: React.FC = () => {
     const [goods, setGoods] = useState<Good[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentGood, setCurrentGood] = useState<Partial<Good> | null>(null);
+    const [imageUploading, setImageUploading] = useState(false);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        setImageUploading(true);
+        try {
+            const response = await api.post('/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            setCurrentGood(prev => prev ? { ...prev, image_url: response.data.url } : null);
+        } catch (error: any) {
+            console.error('Error uploading image:', error);
+            alert('Image upload failed.');
+        } finally {
+            setImageUploading(false);
+            e.target.value = '';
+        }
+    };
 
     const fetchGoods = async () => {
         setLoading(true);
@@ -89,7 +115,7 @@ const AdminGoodsPage: React.FC = () => {
                         {goods.map((good) => (
                             <tr key={good.id} className="hover:bg-white/5 transition-colors">
                                 <td className="p-4">
-                                    <img src={good.image_url} alt={good.name} className="w-12 h-12 object-cover rounded bg-black/50" />
+                                    <img src={formatImageUrl(good.image_url)} alt={good.name} className="w-12 h-12 object-cover rounded bg-black/50" />
                                 </td>
                                 <td className="p-4 font-medium">{good.name}</td>
                                 <td className="p-4">{Number(good.price).toLocaleString()}원</td>
@@ -174,21 +200,47 @@ const AdminGoodsPage: React.FC = () => {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-white/80 mb-1">Image URL</label>
-                                <input
-                                    required
-                                    type="text"
-                                    value={currentGood.image_url || ''}
-                                    onChange={(e) => setCurrentGood({ ...currentGood, image_url: e.target.value })}
-                                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-dancheong-red"
-                                    placeholder="/images/goods/item1.jpg"
-                                />
+                                <label className="block text-sm font-medium text-white/80 mb-1">Image Upload</label>
+                                <div className="flex items-center space-x-4">
+                                    {currentGood.image_url && (
+                                        <div className="relative group">
+                                            <img src={formatImageUrl(currentGood.image_url)} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-white/10" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setCurrentGood({ ...currentGood, image_url: '' })}
+                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        id="goodImageInput"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        disabled={imageUploading}
+                                    />
+                                    <label
+                                        htmlFor="goodImageInput"
+                                        className={`cursor-pointer bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-lg border border-white/10 transition-colors flex items-center ${imageUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    >
+                                        {imageUploading ? (
+                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                                        ) : (
+                                            <Upload size={16} className="mr-2" />
+                                        )}
+                                        {imageUploading ? 'Uploading...' : (currentGood.image_url ? 'Replace Image' : 'Upload Image')}
+                                    </label>
+                                </div>
                             </div>
 
                             <div className="pt-4 flex justify-end">
                                 <button
                                     type="submit"
-                                    className="bg-dancheong-red hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold transition-colors"
+                                    disabled={imageUploading}
+                                    className="bg-dancheong-red hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold transition-colors disabled:opacity-50"
                                 >
                                     Save Good
                                 </button>

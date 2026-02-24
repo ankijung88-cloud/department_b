@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getLocalizedText } from '../utils/i18nUtils';
+import { formatImageUrl } from '../api/client';
 
 type TabType = 'bookings' | 'products' | 'sales' | 'goods';
 
@@ -449,7 +450,7 @@ const MyPage: React.FC = () => {
                                                             <td className="px-6 py-4 font-medium flex items-center gap-4">
                                                                 {order.items && order.items.length > 0 && order.items[0].goods_image && (
                                                                     <div className="w-10 h-10 rounded bg-white/5 overflow-hidden border border-white/10 flex-shrink-0">
-                                                                        <img src={order.items[0].goods_image} className="w-full h-full object-cover" />
+                                                                        <img src={formatImageUrl(order.items[0].goods_image)} className="w-full h-full object-cover" />
                                                                     </div>
                                                                 )}
                                                                 <div>
