@@ -56,6 +56,22 @@ const AdminLayout: React.FC = () => {
                         <Wallet size={20} className="mr-3" />
                         {t('admin.sidebar.bookings')}
                     </Link>
+                    <Link
+                        to="/admin/goods"
+                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/goods') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            }`}
+                    >
+                        <Package size={20} className="mr-3" />
+                        Goods Management
+                    </Link>
+                    <Link
+                        to="/admin/orders"
+                        className={`flex items-center p-3 rounded-lg transition-colors ${isActive('/admin/orders') ? 'bg-dancheong-red text-white' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            }`}
+                    >
+                        <Wallet size={20} className="mr-3" />
+                        Order Management
+                    </Link>
                 </nav>
 
                 <div className="p-4 border-t border-white/5">

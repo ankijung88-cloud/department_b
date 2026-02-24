@@ -55,3 +55,36 @@ export interface Artist {
     status?: 'pending' | 'approved' | 'rejected';
     created_at?: string;
 }
+
+export interface Good {
+    id: number;
+    name: string;
+    description: string;
+    price: number | string;
+    stock: number;
+    image_url: string;
+    created_at?: string;
+}
+
+export interface OrderItem {
+    id?: number;
+    order_id?: number;
+    goods_id: number;
+    quantity: number;
+    price: number | string;
+    goods_name?: string;
+    goods_image?: string;
+}
+
+export interface Order {
+    id: number;
+    user_id: number;
+    user_name?: string;
+    user_email?: string;
+    total_amount: number | string;
+    payment_method: 'card' | 'bank';
+    shipping_status: 'pending' | 'shipping' | 'delivered' | 'cancelled';
+    shipping_address: string;
+    created_at?: string;
+    items?: OrderItem[];
+}

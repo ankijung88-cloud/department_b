@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getBookings, updateBookingStatus, deleteBooking, requestSettlement } from '../api/bookings';
 import { getProductsByUser, deleteProduct } from '../api/products';
+import { getOrdersByUser } from '../api/orders';
+import { Order } from '../types';
 import { AutoTranslatedText } from '../components/common/AutoTranslatedText';
 import { Loader2, Package, ShoppingBag, LayoutDashboard, Edit, Trash2, CheckCircle, XCircle, AlertCircle, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { getLocalizedText } from '../utils/i18nUtils';
 
-type TabType = 'bookings' | 'products' | 'sales';
+type TabType = 'bookings' | 'products' | 'sales' | 'goods';
 
 const MyPage: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -20,6 +22,7 @@ const MyPage: React.FC = () => {
     const [bookings, setBookings] = useState<any[]>([]);
     const [myProducts, setMyProducts] = useState<any[]>([]);
     const [sales, setSales] = useState<any[]>([]);
+    const [myGoodsOrders, setMyGoodsOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -43,6 +46,9 @@ const MyPage: React.FC = () => {
             } else if (activeTab === 'sales') {
                 const data = await getBookings({ seller_id: user.id });
                 setSales(data || []);
+            } else if (activeTab === 'goods') {
+                const data = await getOrdersByUser(Number(user.id));
+                setMyGoodsOrders(data || []);
             }
         } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -208,6 +214,16 @@ const MyPage: React.FC = () => {
                             {t('admin.sidebar.bookings') || '판매 및 정산 내역'}
                         </div>
                         {activeTab === 'sales' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-dancheong-red" />}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('goods')}
+                        className={`px-6 py-4 font-medium transition-all relative ${activeTab === 'goods' ? 'text-dancheong-red' : 'text-white/40 hover:text-white'}`}
+                    >
+                        <div className="flex items-center gap-2">
+                            <Package size={18} />
+                            단청 굿즈 결제 내역
+                        </div>
+                        {activeTab === 'goods' && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-dancheong-red" />}
                     </button>
                 </div>
 
@@ -391,6 +407,69 @@ const MyPage: React.FC = () => {
                                                                         <Trash2 size={14} />
                                                                     </button>
                                                                 </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    );
+                                }
+
+                                if (activeTab === 'goods') {
+                                    const translateShippingStatus = (status: string) => {
+                                        switch (status) {
+                                            case 'pending': return '배송대기';
+                                            case 'shipping': return '배송중';
+                                            case 'delivered': return '배송완료';
+                                            case 'cancelled': return '취소됨';
+                                            default: return status;
+                                        }
+                                    };
+
+                                    return (
+                                        <table className="w-full text-left">
+                                            <thead className="bg-white/5 text-white/40 text-xs uppercase tracking-wider font-bold">
+                                                <tr>
+                                                    <th className="px-6 py-4">주문일자</th>
+                                                    <th className="px-6 py-4">상품 정보</th>
+                                                    <th className="px-6 py-4 text-right">총 결제금액</th>
+                                                    <th className="px-6 py-4 text-center">배송/진행 상태</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {myGoodsOrders.length === 0 ? (
+                                                    <tr><td colSpan={4} className="px-6 py-12 text-center text-white/20">주문 내역이 없습니다.</td></tr>
+                                                ) : (
+                                                    myGoodsOrders.map(order => (
+                                                        <tr key={order.id} className="hover:bg-white/5 transition-colors group">
+                                                            <td className="px-6 py-4 text-sm text-white/40 font-mono">
+                                                                {order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}
+                                                            </td>
+                                                            <td className="px-6 py-4 font-medium flex items-center gap-4">
+                                                                {order.items && order.items.length > 0 && order.items[0].goods_image && (
+                                                                    <div className="w-10 h-10 rounded bg-white/5 overflow-hidden border border-white/10 flex-shrink-0">
+                                                                        <img src={order.items[0].goods_image} className="w-full h-full object-cover" />
+                                                                    </div>
+                                                                )}
+                                                                <div>
+                                                                    <span>{order.items?.[0]?.goods_name}</span>
+                                                                    {order.items && order.items.length > 1 && (
+                                                                        <span className="text-white/60 text-sm ml-2">등 {order.items.length}건</span>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 text-right font-medium text-dancheong-red">
+                                                                {Number(order.total_amount).toLocaleString()}원
+                                                            </td>
+                                                            <td className="px-6 py-4 text-center">
+                                                                <span className={`px-2 py-1 rounded text-xs font-bold tracking-wider ${order.shipping_status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                        order.shipping_status === 'shipping' ? 'bg-blue-500/20 text-blue-400' :
+                                                                            order.shipping_status === 'delivered' ? 'bg-green-500/20 text-green-400' :
+                                                                                'bg-red-500/20 text-red-400'
+                                                                    }`}>
+                                                                    {translateShippingStatus(order.shipping_status)}
+                                                                </span>
                                                             </td>
                                                         </tr>
                                                     ))

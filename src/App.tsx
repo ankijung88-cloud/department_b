@@ -27,6 +27,8 @@ import ArtistFormPage from './pages/admin/ArtistFormPage';
 import ArtistRequestPage from './pages/ArtistRequestPage';
 import ArtistDetailPage from './pages/ArtistDetailPage';
 import MyPage from './pages/MyPage';
+import AdminGoodsPage from './pages/admin/AdminGoodsPage';
+import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 
 function App() {
     return (
@@ -69,6 +71,8 @@ function App() {
                     <Route path="artists" element={<ArtistListPage />} />
                     <Route path="artists/new" element={<ArtistFormPage />} />
                     <Route path="artists/:id" element={<ArtistFormPage />} />
+                    <Route path="goods" element={<AdminGoodsPage />} />
+                    <Route path="orders" element={<AdminOrdersPage />} />
                 </Route>
             </Routes>
         </Router>

@@ -6,6 +6,8 @@ import uploadRoutes from './routes/uploadRoutes';
 import userRoutes from './routes/userRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import artistRoutes from './routes/artistRoutes';
+import goodsRoutes from './routes/goodsRoutes';
+import orderRoutes from './routes/orderRoutes';
 import path from 'path';
 
 const app = express();
@@ -24,6 +26,8 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/artists', artistRoutes);
+app.use('/api/goods', goodsRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Translation Endpoint
 app.get('/', (req, res) => {
