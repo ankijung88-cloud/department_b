@@ -23,40 +23,40 @@ export const FloorGuideSection: React.FC = () => {
                     <h3 className="text-3xl md:text-4xl font-serif font-bold text-white">{t('floor_guide')}</h3>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
                     {FLOOR_CATEGORIES.map((floor, index) => (
                         <Link to={`/floor/${floor.id}`} key={floor.floor} className="block">
                             <motion.div
                                 initial={{ opacity: 0, y: 50 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: index * 0.2 }}
-                                className="group relative h-[500px] overflow-hidden rounded-lg cursor-pointer"
+                                transition={{ delay: index * 0.1 }}
+                                className="group relative h-[400px] lg:h-[450px] overflow-hidden rounded-lg cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
                             >
                                 {/* Background Image with Zoom Effect */}
                                 <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                                     style={{ backgroundImage: `url(${floor.bgImage})` }}
                                 >
-                                    <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-500" />
+                                    <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-500" />
                                 </div>
 
                                 {/* Content */}
-                                <div className="absolute inset-0 p-8 flex flex-col justify-between z-10">
+                                <div className="absolute inset-0 p-6 flex flex-col justify-between z-10 w-full">
                                     <div className="flex justify-between items-start">
-                                        <span className="text-5xl font-serif font-bold text-white/20 group-hover:text-white/40 transition-colors">
+                                        <span className="text-4xl lg:text-5xl font-serif font-bold text-white/30 group-hover:text-white/60 transition-colors">
                                             {floor.floor}
                                         </span>
-                                        <div className="bg-white/10 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0">
-                                            <ArrowUpRight className="text-white" size={24} />
+                                        <div className="bg-white/10 p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                            <ArrowUpRight className="text-white" size={20} />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <h4 className="text-2xl font-bold text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                                        <h4 className="text-xl lg:text-2xl font-bold text-white mb-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                                             <AutoTranslatedText text={getLocalizedText(floor.title, i18n.language)} />
                                         </h4>
-                                        <p className="text-white/80 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                                        <p className="text-white/80 text-sm lg:text-base opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100 line-clamp-3">
                                             <AutoTranslatedText text={getLocalizedText(floor.description, i18n.language)} />
                                         </p>
                                     </div>

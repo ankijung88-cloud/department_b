@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AutoTranslatedText } from '../common/AutoTranslatedText';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../../utils/i18nUtils';
 import LoginModal from '../auth/LoginModal';
 import { useAuth } from '../../context/AuthContext';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const FeaturedSection: React.FC = () => {
     const [products, setProducts] = useState<FeaturedItem[]>([]);
@@ -17,6 +18,15 @@ export const FeaturedSection: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate(); // We'll need this since we are replacing Link
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const { clientWidth } = scrollContainerRef.current;
+            const scrollAmount = direction === 'left' ? -clientWidth : clientWidth;
+            scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    };
 
     useEffect(() => {
         let mounted = true;
@@ -104,50 +114,75 @@ export const FeaturedSection: React.FC = () => {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {products.slice(0, 15).map((item, index) => (
-                        <Link to={`/detail/${item.id}`} key={item.id} className="block group">
-                            <motion.div
-                                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 100,
-                                    damping: 20,
-                                    delay: index * 0.1
-                                }}
-                                className="bg-charcoal rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                            >
-                                <div className="relative aspect-[4/3] overflow-hidden">
-                                    <img
-                                        src={item.imageUrl}
-                                        alt={getLocalizedText(item.title, i18n.language)}
-                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                                    />
-                                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white uppercase tracking-wider">
-                                        {(() => {
-                                            const displayKey = item.subcategory || item.category;
-                                            return t(`nav.${displayKey.toLowerCase()}`) || displayKey;
-                                        })()}
-                                    </div>
-                                </div>
+                <div className="relative group">
+                    <div
+                        ref={scrollContainerRef}
+                        className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    >
+                        {products.slice(0, 6).map((item, index) => (
+                            <div key={item.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] shrink-0 snap-start">
+                                <Link to={`/detail/${item.id}`} className="block group/card">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                        viewport={{ once: true, margin: "-50px" }}
+                                        transition={{
+                                            type: 'spring',
+                                            stiffness: 100,
+                                            damping: 20,
+                                            delay: index * 0.1
+                                        }}
+                                        className="bg-charcoal rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 h-full"
+                                    >
+                                        <div className="relative aspect-[4/3] overflow-hidden">
+                                            <img
+                                                src={item.imageUrl}
+                                                alt={getLocalizedText(item.title, i18n.language)}
+                                                className="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-500"
+                                            />
+                                            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white uppercase tracking-wider">
+                                                {(() => {
+                                                    const displayKey = item.subcategory || item.category;
+                                                    return t(`nav.${displayKey.toLowerCase()}`) || displayKey;
+                                                })()}
+                                            </div>
+                                        </div>
 
-                                <div className="p-6">
-                                    <h4 className="text-xl font-bold text-white mb-2 group-hover:text-dancheong-red transition-colors">
-                                        <AutoTranslatedText text={getLocalizedText(item.title, i18n.language)} />
-                                    </h4>
-                                    <p className="text-white/60 text-sm line-clamp-2 mb-4">
-                                        <AutoTranslatedText text={getLocalizedText(item.description, i18n.language)} />
-                                    </p>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-white/40">{t('common.view_details')}</span>
-                                        <span className="w-8 h-[1px] bg-white/20 group-hover:bg-dancheong-red group-hover:w-12 transition-all duration-300"></span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </Link>
-                    ))}
+                                        <div className="p-6">
+                                            <h4 className="text-xl font-bold text-white mb-2 group-hover/card:text-dancheong-red transition-colors">
+                                                <AutoTranslatedText text={getLocalizedText(item.title, i18n.language)} />
+                                            </h4>
+                                            <p className="text-white/60 text-sm line-clamp-2 mb-4">
+                                                <AutoTranslatedText text={getLocalizedText(item.description, i18n.language)} />
+                                            </p>
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-white/40">{t('common.view_details')}</span>
+                                                <span className="w-8 h-[1px] bg-white/20 group-hover/card:bg-dancheong-red group-hover/card:w-12 transition-all duration-300"></span>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Left Arrow */}
+                    <button
+                        onClick={() => scroll('left')}
+                        className="absolute left-0 top-1/3 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 bg-charcoal/80 text-white p-3 rounded-full hover:bg-dancheong-red transition-colors z-10 hidden md:block opacity-0 group-hover:opacity-100 shadow-xl"
+                        aria-label="Previous"
+                    >
+                        <ChevronLeft size={24} />
+                    </button>
+
+                    {/* Right Arrow */}
+                    <button
+                        onClick={() => scroll('right')}
+                        className="absolute right-0 top-1/3 -translate-y-1/2 translate-x-4 lg:translate-x-12 bg-charcoal/80 text-white p-3 rounded-full hover:bg-dancheong-red transition-colors z-10 hidden md:block opacity-0 group-hover:opacity-100 shadow-xl"
+                        aria-label="Next"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
                 </div>
 
                 {/* Empty State */}
