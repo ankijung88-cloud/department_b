@@ -65,7 +65,7 @@ const AllGoodsPage: React.FC = () => {
                             Exclusive Goods
                         </h1>
                         <p className="text-lg text-white/60 font-light max-w-2xl mx-auto">
-                            단청백화점만의 특별한 감성이 담긴 프리미엄 굿즈 컬렉션입니다.
+                            KOGO만의 특별한 감성이 담긴 프리미엄 굿즈 컬렉션입니다.
                         </p>
                         <motion.div
                             initial={{ width: 0 }}

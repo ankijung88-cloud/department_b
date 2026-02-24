@@ -80,7 +80,7 @@ export const GoodsSection: React.FC = () => {
                             Exclusive Goods
                         </h2>
                         <p className="text-white/60 text-lg max-w-xl font-light">
-                            단청백화점만의 특별한 굿즈를 만나보세요. 소장 가치 있는 아이템들을 준비했습니다.
+                            KOGO만의 특별한 굿즈를 만나보세요. 소장 가치 있는 아이템들을 준비했습니다.
                         </p>
                     </motion.div>
 
