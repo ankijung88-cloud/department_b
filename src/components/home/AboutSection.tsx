@@ -6,9 +6,9 @@ export const AboutSection: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <section className="py-32 bg-charcoal overflow-hidden">
-            <div className="container mx-auto px-6">
-                <div className="flex flex-col lg:flex-row items-center gap-16">
+        <section className="min-h-screen flex items-center py-20 lg:py-0 bg-charcoal overflow-hidden w-full">
+            <div className="container mx-auto px-6 w-full">
+                <div className="flex flex-col lg:flex-row items-center gap-16 w-full">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}

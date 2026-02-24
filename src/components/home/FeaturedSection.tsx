@@ -93,7 +93,7 @@ export const FeaturedSection: React.FC = () => {
     }
 
     return (
-        <section className="py-24 bg-[#2a2a2a]">
+        <section className="min-h-screen flex flex-col justify-center py-24 bg-[#2a2a2a] w-full">
             <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16">
@@ -119,7 +119,7 @@ export const FeaturedSection: React.FC = () => {
                         ref={scrollContainerRef}
                         className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                     >
-                        {products.slice(0, 6).map((item, index) => (
+                        {products.map((item, index) => (
                             <div key={item.id} className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] shrink-0 snap-start">
                                 <Link to={`/detail/${item.id}`} className="block group/card">
                                     <motion.div
@@ -166,23 +166,24 @@ export const FeaturedSection: React.FC = () => {
                         ))}
                     </div>
 
-                    {/* Left Arrow */}
-                    <button
-                        onClick={() => scroll('left')}
-                        className="absolute left-0 top-1/3 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 bg-charcoal/80 text-white p-3 rounded-full hover:bg-dancheong-red transition-colors z-10 hidden md:block opacity-0 group-hover:opacity-100 shadow-xl"
-                        aria-label="Previous"
-                    >
-                        <ChevronLeft size={24} />
-                    </button>
+                    {/* Navigation Arrows - Bottom Center */}
+                    <div className="flex justify-center items-center gap-8 mt-6">
+                        <button
+                            onClick={() => scroll('left')}
+                            className="bg-white/5 hover:bg-dancheong-red text-white p-4 rounded-full transition-all duration-300 shadow-lg border border-white/10"
+                            aria-label="Previous"
+                        >
+                            <ChevronLeft size={28} />
+                        </button>
 
-                    {/* Right Arrow */}
-                    <button
-                        onClick={() => scroll('right')}
-                        className="absolute right-0 top-1/3 -translate-y-1/2 translate-x-4 lg:translate-x-12 bg-charcoal/80 text-white p-3 rounded-full hover:bg-dancheong-red transition-colors z-10 hidden md:block opacity-0 group-hover:opacity-100 shadow-xl"
-                        aria-label="Next"
-                    >
-                        <ChevronRight size={24} />
-                    </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            className="bg-white/5 hover:bg-dancheong-red text-white p-4 rounded-full transition-all duration-300 shadow-lg border border-white/10"
+                            aria-label="Next"
+                        >
+                            <ChevronRight size={28} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Empty State */}

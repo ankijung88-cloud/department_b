@@ -30,7 +30,7 @@ export const ArtistSection: React.FC = () => {
     // Removed: if (artists.length === 0) return null;
 
     return (
-        <section className="py-24 bg-black overflow-hidden">
+        <section className="min-h-screen flex flex-col justify-center py-24 bg-black overflow-hidden w-full">
             <div className="container mx-auto px-6 mb-16">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

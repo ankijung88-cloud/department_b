@@ -11,7 +11,7 @@ export const FloorGuideSection: React.FC = () => {
     const { t, i18n } = useTranslation();
 
     return (
-        <section className="py-24 bg-charcoal">
+        <section className="min-h-screen flex flex-col justify-center py-24 bg-charcoal w-full">
             <div className="container mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
