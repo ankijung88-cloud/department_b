@@ -38,7 +38,7 @@ export const GoodsSection: React.FC = () => {
         setIsCheckoutOpen(true);
     };
 
-    if (loading || goods.length === 0) return null; // Or show a loading skeleton if preferred
+    if (loading) return null; // Or show a loading skeleton if preferred
 
     return (
         <section className="min-h-screen flex flex-col justify-center py-24 bg-charcoal w-full relative overflow-hidden">
@@ -70,50 +70,56 @@ export const GoodsSection: React.FC = () => {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {goods.map((good, index) => (
-                        <motion.div
-                            key={good.id}
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-[#2a2a2a] rounded-2xl overflow-hidden border border-white/5 hover:border-white/20 transition-all group flex flex-col h-full"
-                        >
-                            <div className="relative aspect-square overflow-hidden bg-black/50">
-                                <img
-                                    src={good.image_url}
-                                    alt={good.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                {good.stock <= 0 && (
-                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-                                        <span className="text-white font-bold px-4 py-2 border border-white rounded backdrop-blur-md">SOLD OUT</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="p-6 flex-1 flex flex-col">
-                                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{good.name}</h3>
-                                <p className="text-white/60 text-sm mb-4 line-clamp-2 flex-1">{good.description}</p>
-
-                                <div className="flex items-center justify-between mt-auto">
-                                    <span className="text-xl font-bold text-dancheong-red">
-                                        {Number(good.price).toLocaleString()}원
-                                    </span>
-                                    <button
-                                        onClick={() => handleBuyClick(good)}
-                                        disabled={good.stock <= 0}
-                                        className="bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 text-white p-3 rounded-full transition-colors flex items-center justify-center"
-                                        aria-label="Buy"
-                                    >
-                                        <ShoppingBag size={20} />
-                                    </button>
+                {goods.length === 0 ? (
+                    <div className="w-full flex justify-center items-center py-20 border border-white/5 rounded-2xl bg-white/5">
+                        <p className="text-white/40 text-lg">현재 준비된 특별한 굿즈가 없습니다.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {goods.map((good, index) => (
+                            <motion.div
+                                key={good.id}
+                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                className="bg-[#2a2a2a] rounded-2xl overflow-hidden border border-white/5 hover:border-white/20 transition-all group flex flex-col h-full"
+                            >
+                                <div className="relative aspect-square overflow-hidden bg-black/50">
+                                    <img
+                                        src={good.image_url}
+                                        alt={good.name}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    {good.stock <= 0 && (
+                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                                            <span className="text-white font-bold px-4 py-2 border border-white rounded backdrop-blur-md">SOLD OUT</span>
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
+
+                                <div className="p-6 flex-1 flex flex-col">
+                                    <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{good.name}</h3>
+                                    <p className="text-white/60 text-sm mb-4 line-clamp-2 flex-1">{good.description}</p>
+
+                                    <div className="flex items-center justify-between mt-auto">
+                                        <span className="text-xl font-bold text-dancheong-red">
+                                            {Number(good.price).toLocaleString()}원
+                                        </span>
+                                        <button
+                                            onClick={() => handleBuyClick(good)}
+                                            disabled={good.stock <= 0}
+                                            className="bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 text-white p-3 rounded-full transition-colors flex items-center justify-center"
+                                            aria-label="Buy"
+                                        >
+                                            <ShoppingBag size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );
