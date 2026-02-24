@@ -2,6 +2,7 @@ import React from 'react';
 import { AutoTranslatedText } from '../common/AutoTranslatedText';
 import { motion } from 'framer-motion';
 import { FLOOR_CATEGORIES } from '../../data/mockData';
+import { FloorCategory } from '../../types';
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../../utils/i18nParams';
@@ -24,7 +25,7 @@ export const FloorGuideSection: React.FC = () => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
-                    {FLOOR_CATEGORIES.map((floor, index) => (
+                    {FLOOR_CATEGORIES.map((floor: FloorCategory, index: number) => (
                         <Link to={`/floor/${floor.id}`} key={floor.floor} className="block">
                             <motion.div
                                 initial={{ opacity: 0, y: 50 }}

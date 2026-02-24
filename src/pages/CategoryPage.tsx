@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedText } from '../utils/i18nUtils';
 import { getProductsByCategory } from '../api/products';
-import { FeaturedItem } from '../types';
+import { FeaturedItem, FloorCategory } from '../types';
 import { FLOOR_CATEGORIES } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import { Plus } from 'lucide-react';
@@ -38,8 +38,7 @@ const CategoryPage: React.FC = () => {
     const categoryId = category || 'tickets';
     // const targetCategories = CATEGORY_FILTERS[categoryId] || []; // Old logic using internal categories
 
-    // Find current floor metadata
-    const floorData = FLOOR_CATEGORIES.find(f => f.id === categoryId);
+    const floorData = FLOOR_CATEGORIES.find((f: FloorCategory) => f.id === categoryId);
 
     useEffect(() => {
         let mounted = true;
