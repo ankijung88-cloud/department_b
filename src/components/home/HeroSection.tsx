@@ -17,8 +17,7 @@ export const HeroSection: React.FC = () => {
                     backgroundImage: 'url("/image/hero.jpg")',
                 }}
             >
-                {/* Spotlight effect overlay: lit center, dark edges */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(0,0,0,0)_0%,_rgba(0,0,0,0.8)_100%)]" />
+                <div className="absolute inset-0 bg-black/40" /> {/* Create overlay for text readability */}
             </div>
 
             {/* Content */}
