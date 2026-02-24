@@ -14,7 +14,7 @@ export const HeroSection: React.FC = () => {
             <div
                 className="absolute inset-0 bg-cover bg-center z-0"
                 style={{
-                    backgroundImage: 'url("https://images.unsplash.com/photo-1546872935-8e62d377b5a1?q=80&w=2574&auto=format&fit=crop")',
+                    backgroundImage: 'url("/image/hero.png")',
                 }}
             >
                 <div className="absolute inset-0 bg-black/40" /> {/* Create overlay for text readability */}
