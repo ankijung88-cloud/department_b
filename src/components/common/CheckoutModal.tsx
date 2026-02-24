@@ -37,7 +37,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, g
         setIsSubmitting(true);
         try {
             const orderData: Partial<Order> = {
-                user_id: user.id,
+                user_id: Number(user.id),
                 total_amount: totalAmount,
                 payment_method: paymentMethod,
                 shipping_address: address,
