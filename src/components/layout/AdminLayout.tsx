@@ -46,7 +46,7 @@ const AdminLayout: React.FC = () => {
                             }`}
                     >
                         <Disc size={20} className="mr-3" />
-                        Artist Management
+                        아티스트 관리
                     </Link>
                     <Link
                         to="/admin/bookings"
@@ -62,7 +62,7 @@ const AdminLayout: React.FC = () => {
                             }`}
                     >
                         <Package size={20} className="mr-3" />
-                        Goods Management
+                        굿즈 관리
                     </Link>
                     <Link
                         to="/admin/orders"
@@ -70,7 +70,7 @@ const AdminLayout: React.FC = () => {
                             }`}
                     >
                         <Wallet size={20} className="mr-3" />
-                        Order Management
+                        굿즈 주문 관리
                     </Link>
                 </nav>
 
